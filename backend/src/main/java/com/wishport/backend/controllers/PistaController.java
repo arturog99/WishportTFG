@@ -1,0 +1,40 @@
+package com.wishport.backend.controllers;
+
+import com.wishport.backend.entities.Pista;
+import com.wishport.backend.repositories.PistaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/pistas")
+@CrossOrigin(origins = "*")
+public class PistaController {
+
+    @Autowired
+    private PistaRepository pistaRepository;
+
+    // Obtener todas las pistas
+    @GetMapping
+    public ResponseEntity<List<Pista>> getAllPistas() {
+        List<Pista> pistas = pistaRepository.findAll();
+        return ResponseEntity.ok(pistas);
+    }
+
+    // Obtener pista por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Pista> getPistaById(@PathVariable Integer id) {
+        return pistaRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Obtener pistas por deporte
+    @GetMapping("/deporte/{deporte}")
+    public ResponseEntity<List<Pista>> getPistasByDeporte(@PathVariable String deporte) {
+        List<Pista> pistas = pistaRepository.findByDeporte(deporte);
+        return ResponseEntity.ok(pistas);
+    }
+}

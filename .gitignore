@@ -1,0 +1,24 @@
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Copilot
+copilot.data.migration.ask2agent.xml
+
+# Maven
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# Android (cuando creemos frontend)
+frontend/.gradle/
+frontend/local.properties
+frontend/.idea/
+frontend/build/
+frontend/*.iml
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

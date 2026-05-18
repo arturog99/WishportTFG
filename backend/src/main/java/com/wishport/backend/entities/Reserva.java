@@ -63,4 +63,5 @@ public class Reserva {
     public void setIdPista(Pista idPista) { this.idPista = idPista; }
     public Usuario getIdUsuario() { return idUsuario; }
     public void setIdUsuario(Usuario idUsuario) { this.idUsuario = idUsuario; }
+
 }

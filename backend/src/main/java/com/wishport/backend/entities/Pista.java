@@ -42,4 +42,5 @@ public class Pista {
     public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+
 }

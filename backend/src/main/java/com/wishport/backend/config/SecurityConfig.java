@@ -18,29 +18,22 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
+
+@Autowired
 private JwtAuthenticationFilter jwtAuthenticationFilter;
 
 @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 http
-// Deshabilitar CSRF (no necesario para APIs REST)
-.csrf().disable()
-// Configurar CORS para permitir peticiones desde Android
-.cors().configurationSource(corsConfigurationSource())
-.and()
-// Sin sesiones (stateless, usamos JWT)
-.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-.and()
-// Configurar qué rutas son públicas y cuáles privadas
-.authorizeHttpRequests()
-// Rutas públicas (no requieren token)
+.csrf(csrf -> csrf.disable())
+.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+.authorizeHttpRequests(auth -> auth
 .requestMatchers("/api/usuarios/register", "/api/usuarios/login").permitAll()
-// Rutas privadas (requieren token)
 .anyRequest().authenticated()
-.and()
-// Añadir nuestro filtro JWT antes del filtro de autenticación por defecto
+)
 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
 return http.build();
 }
@@ -48,13 +41,12 @@ return http.build();
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
 CorsConfiguration configuration = new CorsConfiguration();
-configuration.setAllowedOrigins(Arrays.asList("*")); // En producción, poner la IP del Android
+configuration.setAllowedOrigins(Arrays.asList("*"));
 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 configuration.setAllowedHeaders(Arrays.asList("*"));
-configuration.setAllowCredentials(false);
 
 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 source.registerCorsConfiguration("/**", configuration);
 return source;
- }
+}
 }

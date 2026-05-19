@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+// Controlador REST para gestionar las reservas
 @RestController
 @RequestMapping("/api/reservas")
 @CrossOrigin(origins = "*")
@@ -28,31 +29,31 @@ public class ReservaController {
     @Autowired
     private PistaRepository pistaRepository;
 
-    // Obtener todas las reservas
+    // Endpoint para obtener todas las reservas
     @GetMapping
     public ResponseEntity<List<Reserva>> getAllReservas() {
         List<Reserva> reservas = reservaRepository.findAll();
         return ResponseEntity.ok(reservas);
     }
 
-    // Obtener reservas de un usuario
+    // Endpoint para obtener reservas de un usuario
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<List<Reserva>> getReservasByUsuario(@PathVariable Integer idUsuario) {
         List<Reserva> reservas = reservaRepository.findByIdUsuario_IdUsuario(idUsuario);
         return ResponseEntity.ok(reservas);
     }
 
-    // Obtener reservas de una pista
+    // Endpoint para obtener reservas de una pista
     @GetMapping("/pista/{idPista}")
     public ResponseEntity<List<Reserva>> getReservasByPista(@PathVariable Integer idPista) {
         List<Reserva> reservas = reservaRepository.findByIdPista_IdPista(idPista);
         return ResponseEntity.ok(reservas);
     }
 
-    // Crear una reserva
+    // Endpoint para crear una reserva
     @PostMapping
     public ResponseEntity<?> createReserva(@RequestBody Reserva reserva) {
-        // Verificar que el usuario existe
+        // Verificar usuario
         if (reserva.getIdUsuario() == null || reserva.getIdUsuario().getIdUsuario() == null) {
             return ResponseEntity.badRequest().body("ID de usuario requerido");
         }
@@ -63,7 +64,7 @@ public class ReservaController {
             return ResponseEntity.badRequest().body("Usuario no encontrado");
         }
 
-        // Verificar que la pista existe
+        // Verificar pista
         if (reserva.getIdPista() == null || reserva.getIdPista().getIdPista() == null) {
             return ResponseEntity.badRequest().body("ID de pista requerido");
         }
@@ -80,13 +81,12 @@ public class ReservaController {
         reserva.setFecha(LocalDateTime.now());
         reserva.setEstadoReserva("ACTIVA");
 
-        // Guardar reserva
         Reserva reservaGuardada = reservaRepository.save(reserva);
 
         return ResponseEntity.ok(reservaGuardada);
     }
 
-    // Cancelar una reserva
+    // Endpoint para cancelar una reserva
     @DeleteMapping("/{id}")
     public ResponseEntity<?> cancelReserva(@PathVariable Integer id) {
         if (!reservaRepository.existsById(id)) {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Controlador REST para gestionar las pistas deportivas
 @RestController
 @RequestMapping("/api/pistas")
 @CrossOrigin(origins = "*")
@@ -16,14 +17,14 @@ public class PistaController {
     @Autowired
     private PistaRepository pistaRepository;
 
-    // Obtener todas las pistas
+    // Endpoint para obtener todas las pistas
     @GetMapping
     public ResponseEntity<List<Pista>> getAllPistas() {
         List<Pista> pistas = pistaRepository.findAll();
         return ResponseEntity.ok(pistas);
     }
 
-    // Obtener pista por ID
+    // Endpoint para obtener una pista por ID
     @GetMapping("/{id}")
     public ResponseEntity<Pista> getPistaById(@PathVariable Integer id) {
         return pistaRepository.findById(id)
@@ -31,7 +32,7 @@ public class PistaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Obtener pistas por deporte
+    // Endpoint para obtener pistas filtradas por deporte
     @GetMapping("/deporte/{deporte}")
     public ResponseEntity<List<Pista>> getPistasByDeporte(@PathVariable String deporte) {
         List<Pista> pistas = pistaRepository.findByDeporte(deporte);

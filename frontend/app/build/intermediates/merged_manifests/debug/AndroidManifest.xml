@@ -63,10 +63,7 @@
         <activity android:name="com.wishport.frontend.ui.PistasActivity" />
         <activity android:name="com.wishport.frontend.ui.ReservasActivity" />
         <activity android:name="com.wishport.frontend.ui.PerfilActivity" />
-        <activity android:name="com.wishport.frontend.ui.DetalleReservaActivity" />
         <activity android:name="com.wishport.frontend.ui.AdminActivity" />
-        <activity android:name="com.wishport.frontend.ui.DetallePistaActivity" />
-        <activity android:name="com.wishport.frontend.ui.CheckoutActivity" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

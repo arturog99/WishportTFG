@@ -32,6 +32,9 @@ public interface ApiService {
     @GET("reservas/usuario/{id}")
     Call<List<Reserva>> getReservasUsuario(@Path("id") Integer id);
 
+    @GET("reservas/pista/{id}")
+    Call<List<Reserva>> getReservasPista(@Path("id") Integer id);
+
     @POST("reservas")
     Call<Reserva> crearReserva(@Body Reserva reserva);
 

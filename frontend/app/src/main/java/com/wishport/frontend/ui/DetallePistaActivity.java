@@ -13,13 +13,23 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.wishport.frontend.R;
+import com.wishport.frontend.api.RetrofitClient;
 import com.wishport.frontend.models.Pista;
+import com.wishport.frontend.models.Reserva;
+import com.wishport.frontend.utils.TokenManager;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Pantalla de detalle de pista: muestra info, permite seleccionar fecha y hora.
@@ -41,6 +51,8 @@ public class DetallePistaActivity extends AppCompatActivity {
     private LocalDate fechaSeleccionada;
     private int horaInicioSeleccionada = -1;
     private final List<Button> botonesHorarios = new ArrayList<>();
+    private final Set<Integer> horasOcupadas = new HashSet<>();
+    private List<Reserva> reservasPista = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +79,16 @@ public class DetallePistaActivity extends AppCompatActivity {
         mostrarInfoPista();
         prepararGridHorarios();
         refrescarEstadoBotones();
+        cargarReservasPista();
 
         btnSeleccionarFecha.setOnClickListener(v -> mostrarCalendario());
         btnReservar.setOnClickListener(v -> proceder());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarReservasPista();
     }
 
     private void mostrarInfoPista() {
@@ -116,10 +135,12 @@ public class DetallePistaActivity extends AppCompatActivity {
     private void refrescarEstadoBotones() {
         boolean esHoy = fechaSeleccionada.equals(LocalDate.now());
         int horaActual = LocalTime.now().getHour();
+        recalcularHorasOcupadas();
         for (Button btn : botonesHorarios) {
             int h = (int) btn.getTag();
             boolean pasada = esHoy && h <= horaActual;
-            if (pasada) {
+            boolean ocupada = horasOcupadas.contains(h);
+            if (pasada || ocupada) {
                 btn.setEnabled(false);
                 btn.setBackgroundColor(Color.GRAY);
                 btn.setAlpha(0.3f);
@@ -131,6 +152,45 @@ public class DetallePistaActivity extends AppCompatActivity {
         }
     }
 
+    private void recalcularHorasOcupadas() {
+        horasOcupadas.clear();
+        for (Reserva r : reservasPista) {
+            if (r == null) continue;
+            // Filtrar canceladas
+            if (r.getEstadoReserva() != null && r.getEstadoReserva().equalsIgnoreCase("CANCELADA")) continue;
+            LocalDateTime fecha = r.getFecha();
+            if (fecha == null) continue;
+            if (!fecha.toLocalDate().equals(fechaSeleccionada)) continue;
+            // Intentar deducir la hora desde horaInicio ("HH:mm") o desde fecha
+            int hora = -1;
+            String hi = r.getHoraInicio();
+            if (hi != null && hi.length() >= 2) {
+                try { hora = Integer.parseInt(hi.substring(0, 2)); } catch (NumberFormatException ignored) {}
+            }
+            if (hora == -1) hora = fecha.getHour();
+            horasOcupadas.add(hora);
+        }
+    }
+
+    private void cargarReservasPista() {
+        if (pistaActual == null || pistaActual.getIdPista() == null) return;
+        String token = new TokenManager(this).getToken();
+        RetrofitClient.getApiService(token).getReservasPista(pistaActual.getIdPista())
+                .enqueue(new Callback<List<Reserva>>() {
+                    @Override
+                    public void onResponse(Call<List<Reserva>> call, Response<List<Reserva>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            reservasPista = response.body();
+                            refrescarEstadoBotones();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<List<Reserva>> call, Throwable t) {
+                        Toast.makeText(DetallePistaActivity.this, "No se pudieron cargar reservas", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private void marcarHoraSeleccionada(int hora) {
         horaInicioSeleccionada = hora;
         refrescarEstadoBotones();
@@ -139,6 +199,12 @@ public class DetallePistaActivity extends AppCompatActivity {
     private void proceder() {
         if (horaInicioSeleccionada == -1) {
             Toast.makeText(this, "Elige un horario primero", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (horasOcupadas.contains(horaInicioSeleccionada)) {
+            Toast.makeText(this, "Ese horario ya está ocupado", Toast.LENGTH_SHORT).show();
+            horaInicioSeleccionada = -1;
+            refrescarEstadoBotones();
             return;
         }
         Intent intent = new Intent(this, CheckoutActivity.class);

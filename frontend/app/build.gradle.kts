@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -29,10 +28,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
-}
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -49,7 +45,8 @@ dependencies {
     implementation(libs.glide)
     
     // ZXing para QR
-    implementation(libs.zxing)
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.android)
     
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

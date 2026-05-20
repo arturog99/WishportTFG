@@ -57,24 +57,44 @@ public class LoginActivity extends AppCompatActivity {
         apiService.login(credenciales).enqueue(new Callback<Map<String, Object>>() {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String token = (String) response.body().get("token");
-                    Integer userId = ((Double) response.body().get("idUsuario")).intValue();
-                    
-                    tokenManager.saveToken(token);
-                    tokenManager.saveUserId(userId);
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Map<String, Object> body = response.body();
+                        String token = (String) body.get("token");
 
-                    Intent intent = new Intent(LoginActivity.this, PistasActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                        Object userIdObj = body.get("idUsuario");
+                        Integer userId = (userIdObj instanceof Number) ? ((Number) userIdObj).intValue() : -1;
+
+                        String rol = (String) body.get("rol");
+                        if (rol == null) rol = "";
+
+                        if (token == null) {
+                            Toast.makeText(LoginActivity.this, "Respuesta inválida del servidor", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        tokenManager.saveToken(token);
+                        tokenManager.saveUserId(userId);
+                        getSharedPreferences("WishPortPrefs", MODE_PRIVATE)
+                                .edit().putString("rolUsuario", rol).apply();
+
+                        Class<?> destino = "ADMIN".equals(rol) ? AdminActivity.class : PistasActivity.class;
+                        Intent intent = new Intent(LoginActivity.this, destino);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Credenciales incorrectas (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this, "Error procesando respuesta: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<Map<String, Object>> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                t.printStackTrace();
             }
         });
     }

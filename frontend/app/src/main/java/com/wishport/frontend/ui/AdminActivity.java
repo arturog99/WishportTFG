@@ -24,7 +24,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.wishport.frontend.R;
 import com.wishport.frontend.adapters.ReservaAdapter;
 import com.wishport.frontend.api.RetrofitClient;
-import com.wishport.frontend.api.TokenManager;
+import com.wishport.frontend.utils.TokenManager;
 import com.wishport.frontend.models.Reserva;
 import com.wishport.frontend.models.Usuario;
 

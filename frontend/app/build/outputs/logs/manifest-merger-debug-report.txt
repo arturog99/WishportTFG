@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-38:12
-INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-38:12
-INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-38:12
-INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-38:12
+ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-35:12
+INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:2:1-35:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\Arturo\.gradle\caches\9.0-milestone-1\transforms\09e48e937f2a881df9930bbc088e821a\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\Arturo\.gradle\caches\9.0-milestone-1\transforms\30a075b6d6abd95bdc70c7945c3afb1a\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Arturo\.gradle\caches\9.0-milestone-1\transforms\2b5451530c1a621686ca35ad69bb7538\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
@@ -72,8 +72,8 @@ MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] C:\Users\Arturo\.grad
 	android:name
 		ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:9:22-62
 application
-ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:11:5-36:19
-INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:11:5-36:19
+ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:11:5-33:19
+INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:11:5-33:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\Arturo\.gradle\caches\9.0-milestone-1\transforms\09e48e937f2a881df9930bbc088e821a\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\Arturo\.gradle\caches\9.0-milestone-1\transforms\09e48e937f2a881df9930bbc088e821a\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\Arturo\.gradle\caches\9.0-milestone-1\transforms\30a075b6d6abd95bdc70c7945c3afb1a\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -138,22 +138,10 @@ activity#com.wishport.frontend.ui.PerfilActivity
 ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:30:9-55
 	android:name
 		ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:30:19-52
-activity#com.wishport.frontend.ui.DetalleReservaActivity
-ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:31:9-63
-	android:name
-		ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:31:19-60
 activity#com.wishport.frontend.ui.AdminActivity
-ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:32:9-54
+ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:31:9-54
 	android:name
-		ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:32:19-51
-activity#com.wishport.frontend.ui.DetallePistaActivity
-ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:33:9-61
-	android:name
-		ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:33:19-58
-activity#com.wishport.frontend.ui.CheckoutActivity
-ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:34:9-57
-	android:name
-		ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:34:19-54
+		ADDED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml:31:19-51
 uses-sdk
 INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Arturo\Desktop\WishportTFG\frontend\app\src\main\AndroidManifest.xml

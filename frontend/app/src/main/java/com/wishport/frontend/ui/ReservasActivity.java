@@ -37,6 +37,7 @@ public class ReservasActivity extends AppCompatActivity {
 
         rvReservas.setLayoutManager(new LinearLayoutManager(this));
         reservaAdapter = new ReservaAdapter(new java.util.ArrayList<>());
+        reservaAdapter.setOnReservaClickListener(this::abrirDetalleReserva);
         rvReservas.setAdapter(reservaAdapter);
 
         btnPistas.setOnClickListener(v -> {
@@ -79,5 +80,11 @@ public class ReservasActivity extends AppCompatActivity {
                 Toast.makeText(ReservasActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void abrirDetalleReserva(Reserva reserva) {
+        Intent intent = new Intent(this, DetalleReservaActivity.class);
+        intent.putExtra(DetalleReservaActivity.EXTRA_RESERVA, reserva);
+        startActivity(intent);
     }
 }

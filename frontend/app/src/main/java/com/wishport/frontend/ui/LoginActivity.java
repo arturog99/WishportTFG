@@ -41,14 +41,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login() {
-        String email = etEmail.getText().toString();
+        String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError("Email no válido");
+            etEmail.requestFocus();
+            return;
+        }
+        if (password.length() < 4) {
+            etPassword.setError("Contraseña demasiado corta");
+            etPassword.requestFocus();
+            return;
+        }
 
+        btnLogin.setEnabled(false);
         Usuario credenciales = new Usuario();
         credenciales.setEmail(email);
         credenciales.setPassword(password);
@@ -83,9 +94,11 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
+                        btnLogin.setEnabled(true);
                         Toast.makeText(LoginActivity.this, "Credenciales incorrectas (" + response.code() + ")", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
+                    btnLogin.setEnabled(true);
                     Toast.makeText(LoginActivity.this, "Error procesando respuesta: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
@@ -93,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                btnLogin.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }

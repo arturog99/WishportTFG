@@ -6,7 +6,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static Retrofit retrofit = null;
 
     public static Retrofit getClient(String token) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -22,15 +21,11 @@ public class RetrofitClient {
             });
         }
 
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(ApiService.BASE_URL)
-                    .client(httpClient.build())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-
-        return retrofit;
+        return new Retrofit.Builder()
+                .baseUrl(ApiService.BASE_URL)
+                .client(httpClient.build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 
     public static ApiService getApiService(String token) {

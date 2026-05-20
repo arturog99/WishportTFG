@@ -4,7 +4,7 @@
             "outputFile": "com.wishport.frontend.app-mergeDebugResources-31:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Arturo\\.gradle\\caches\\9.0-milestone-1\\transforms\\da65ddd1637e2a7d02c1c96d6e9820ce\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\Arturo\\.gradle\\caches\\9.0-milestone-1\\transforms\\0350c08c7ffc8be4cf013eba035f6372\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Arturo\\.gradle\\caches\\9.0-milestone-1\\transforms\\43b961722c1c42bd2d02bb8e275c7d9d\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\Arturo\\.gradle\\caches\\9.0-milestone-1\\transforms\\27629cca7805be2d8c403424aabb6067\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

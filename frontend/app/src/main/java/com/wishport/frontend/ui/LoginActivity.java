@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                     tokenManager.saveToken(token);
                     tokenManager.saveUserId(userId);
 
-                    Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, PistasActivity.class);
                     startActivity(intent);
                     finish();
                 } else {

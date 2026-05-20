@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_admin.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/layout/activity_admin.xml"
+    },
+    {
+        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_main.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/layout/activity_main.xml"
+    }
+]

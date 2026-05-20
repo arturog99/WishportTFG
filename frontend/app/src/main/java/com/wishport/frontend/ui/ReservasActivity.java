@@ -36,7 +36,7 @@ public class ReservasActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
 
         rvReservas.setLayoutManager(new LinearLayoutManager(this));
-        reservaAdapter = new ReservaAdapter(null);
+        reservaAdapter = new ReservaAdapter(new java.util.ArrayList<>());
         rvReservas.setAdapter(reservaAdapter);
 
         btnPistas.setOnClickListener(v -> {

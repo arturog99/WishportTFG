@@ -28,10 +28,7 @@
         <activity android:name=".ui.PistasActivity" />
         <activity android:name=".ui.ReservasActivity" />
         <activity android:name=".ui.PerfilActivity" />
-        <activity android:name=".ui.DetalleReservaActivity" />
         <activity android:name=".ui.AdminActivity" />
-        <activity android:name=".ui.DetallePistaActivity" />
-        <activity android:name=".ui.CheckoutActivity" />
         
     </application>
 

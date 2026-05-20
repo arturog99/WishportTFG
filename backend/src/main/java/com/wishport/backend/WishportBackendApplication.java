@@ -17,7 +17,6 @@ public class WishportBackendApplication {
         SpringApplication.run(WishportBackendApplication.class, args);
         System.out.println("========================================");
         System.out.println("WishPort Backend iniciado correctamente");
-        System.out.println("API disponible en: http://localhost:8080");
         System.out.println("========================================");
     }
 }

@@ -1,0 +1,22 @@
+R_DEF: Internal format may change without notice
+local
+color accent
+color black
+color primary
+color primary_dark
+color purple_200
+color purple_500
+color purple_700
+color teal_200
+color teal_700
+color white
+id btnCrearAdmin
+id btnEscanearQr
+id btnLogout
+id emptyStateLayout
+id progressBar
+id recyclerViewReservasHoy
+layout activity_admin
+layout activity_main
+string app_name
+style Theme.WishPort

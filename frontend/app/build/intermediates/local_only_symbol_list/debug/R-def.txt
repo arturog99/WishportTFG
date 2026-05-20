@@ -16,8 +16,8 @@ id btnLogout
 id emptyStateLayout
 id progressBar
 id recyclerViewReservasHoy
-id tvEstado
-id tvFecha
+id tvDeporte
+id tvInfoReserva
 layout activity_admin
 layout activity_main
 layout item_reserva

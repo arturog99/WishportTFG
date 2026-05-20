@@ -81,27 +81,68 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void configurarFormateadores() {
         etNumTarjeta.addTextChangedListener(new TextWatcher() {
+            private boolean isFormatting = false;
+
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+
             @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+
             @Override
             public void afterTextChanged(Editable s) {
+                if (isFormatting) return;
+                isFormatting = true;
+
                 String original = s.toString().replace(" ", "");
-                if (original.length() > 0 && original.length() % 4 == 0 && original.length() < 16) {
-                    if (s.charAt(s.length() - 1) != ' ') s.append(" ");
+                StringBuilder formatted = new StringBuilder();
+
+                for (int i = 0; i < original.length(); i++) {
+                    if (i > 0 && i % 4 == 0) {
+                        formatted.append(" ");
+                    }
+                    formatted.append(original.charAt(i));
                 }
+
+                etNumTarjeta.setText(formatted.toString());
+                etNumTarjeta.setSelection(formatted.length());
+
+                isFormatting = false;
             }
         });
+
         etCaducidad.addTextChangedListener(new TextWatcher() {
+            private boolean isFormatting = false;
+
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+
             @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 2 && !s.toString().contains("/")) s.append("/");
+                if (isFormatting) return;
+                isFormatting = true;
+
+                String original = s.toString().replace("/", "");
+                StringBuilder formatted = new StringBuilder();
+
+                for (int i = 0; i < original.length() && i < 4; i++) {
+                    if (i == 2) {
+                        formatted.append("/");
+                    }
+                    formatted.append(original.charAt(i));
+                }
+
+                etCaducidad.setText(formatted.toString());
+                etCaducidad.setSelection(formatted.length());
+
+                isFormatting = false;
             }
         });
     }
 
     private void procesarPago() {
+        btnPagar.setEnabled(false);
+        progressBarPago.setVisibility(View.VISIBLE);
+
         String titular = etTitular.getText().toString().trim();
         String numTarjeta = etNumTarjeta.getText().toString().replace(" ", "");
         String caducidad = etCaducidad.getText().toString().trim();
@@ -110,16 +151,22 @@ public class CheckoutActivity extends AppCompatActivity {
         if (titular.isEmpty() || titular.length() < 2) {
             etTitular.setError("Introduce el nombre del titular");
             etTitular.requestFocus();
+            btnPagar.setEnabled(true);
+            progressBarPago.setVisibility(View.GONE);
             return;
         }
         if (numTarjeta.length() != 16 || !numTarjeta.matches("\\d{16}")) {
             etNumTarjeta.setError("Debe tener 16 dígitos");
             etNumTarjeta.requestFocus();
+            btnPagar.setEnabled(true);
+            progressBarPago.setVisibility(View.GONE);
             return;
         }
         if (!caducidad.matches("\\d{2}/\\d{2}")) {
             etCaducidad.setError("Formato MM/AA");
             etCaducidad.requestFocus();
+            btnPagar.setEnabled(true);
+            progressBarPago.setVisibility(View.GONE);
             return;
         }
         try {
@@ -127,16 +174,22 @@ public class CheckoutActivity extends AppCompatActivity {
             if (mes < 1 || mes > 12) {
                 etCaducidad.setError("Mes inválido");
                 etCaducidad.requestFocus();
+                btnPagar.setEnabled(true);
+                progressBarPago.setVisibility(View.GONE);
                 return;
             }
         } catch (NumberFormatException e) {
             etCaducidad.setError("Formato MM/AA");
             etCaducidad.requestFocus();
+            btnPagar.setEnabled(true);
+            progressBarPago.setVisibility(View.GONE);
             return;
         }
         if (!cvv.matches("\\d{3}")) {
             etCVV.setError("3 dígitos");
             etCVV.requestFocus();
+            btnPagar.setEnabled(true);
+            progressBarPago.setVisibility(View.GONE);
             return;
         }
 
@@ -145,11 +198,10 @@ public class CheckoutActivity extends AppCompatActivity {
         String token = tokenManager.getToken();
         if (userId == null || userId == -1) {
             Toast.makeText(this, "Error: sesión no válida", Toast.LENGTH_SHORT).show();
+            btnPagar.setEnabled(true);
+            progressBarPago.setVisibility(View.GONE);
             return;
         }
-
-        btnPagar.setEnabled(false);
-        progressBarPago.setVisibility(View.VISIBLE);
 
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(userId);

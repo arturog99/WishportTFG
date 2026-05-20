@@ -1,5 +1,7 @@
 package com.wishport.frontend.ui;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -11,9 +13,14 @@ import com.wishport.frontend.R;
 import com.wishport.frontend.api.ApiService;
 import com.wishport.frontend.api.RetrofitClient;
 import com.wishport.frontend.models.Pista;
+import com.wishport.frontend.models.Reserva;
+import com.wishport.frontend.models.Usuario;
 import com.wishport.frontend.ui.adapters.PistaAdapter;
 import com.wishport.frontend.utils.TokenManager;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +45,7 @@ public class PistasActivity extends AppCompatActivity {
 
         rvPistas.setLayoutManager(new LinearLayoutManager(this));
         pistaAdapter = new PistaAdapter(new ArrayList<>());
+        pistaAdapter.setOnPistaClickListener(this::iniciarReserva);
         rvPistas.setAdapter(pistaAdapter);
 
         btnReservas.setOnClickListener(v -> {
@@ -79,6 +87,50 @@ public class PistasActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Pista>> call, Throwable t) {
+                Toast.makeText(PistasActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void iniciarReserva(Pista pista) {
+        Calendar c = Calendar.getInstance();
+        new DatePickerDialog(this, (dpv, anio, mes, dia) -> {
+            LocalDate fecha = LocalDate.of(anio, mes + 1, dia);
+            new TimePickerDialog(this, (tpv, hora, minuto) -> {
+                LocalTime horaInicio = LocalTime.of(hora, minuto);
+                LocalTime horaFin = horaInicio.plusHours(1);
+                crearReserva(pista, fecha, horaInicio, horaFin);
+            }, 10, 0, true).show();
+        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void crearReserva(Pista pista, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
+        Integer userId = tokenManager.getUserId();
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(userId);
+
+        Reserva reserva = new Reserva();
+        reserva.setIdPista(pista);
+        reserva.setIdUsuario(usuario);
+        reserva.setFecha(fecha);
+        reserva.setHoraInicio(horaInicio);
+        reserva.setHoraFin(horaFin);
+        reserva.setEstadoReserva("ACTIVA");
+
+        String token = tokenManager.getToken();
+        RetrofitClient.getApiService(token).crearReserva(reserva).enqueue(new Callback<Reserva>() {
+            @Override
+            public void onResponse(Call<Reserva> call, Response<Reserva> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(PistasActivity.this, "Reserva creada \u2713", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(PistasActivity.this, "Error al reservar (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Reserva> call, Throwable t) {
                 Toast.makeText(PistasActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }

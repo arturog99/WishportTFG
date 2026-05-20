@@ -20,15 +20,15 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     @NonNull
     @Override
     public ReservaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_reserva, parent, false);
         return new ReservaViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReservaViewHolder holder, int position) {
         Reserva reserva = reservas.get(position);
-        holder.text1.setText(reserva.getFecha() != null ? reserva.getFecha().toString() : "Sin fecha");
-        holder.text2.setText(reserva.getEstadoReserva() != null ? reserva.getEstadoReserva() : "Sin estado");
+        holder.tvFecha.setText(reserva.getFecha() != null ? reserva.getFecha().toString() : "Sin fecha");
+        holder.tvEstado.setText(reserva.getEstadoReserva() != null ? reserva.getEstadoReserva() : "Sin estado");
     }
 
     @Override
@@ -37,12 +37,12 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     }
 
     static class ReservaViewHolder extends RecyclerView.ViewHolder {
-        TextView text1, text2;
+        TextView tvFecha, tvEstado;
 
         public ReservaViewHolder(@NonNull View itemView) {
             super(itemView);
-            text1 = itemView.findViewById(android.R.id.text1);
-            text2 = itemView.findViewById(android.R.id.text2);
+            tvFecha = itemView.findViewById(R.id.tvFecha);
+            tvEstado = itemView.findViewById(R.id.tvEstado);
         }
     }
 }

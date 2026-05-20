@@ -102,8 +102,41 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void procesarPago() {
-        if (etNumTarjeta.getText().toString().replace(" ", "").length() != 16) {
-            etNumTarjeta.setError("16 dígitos");
+        String titular = etTitular.getText().toString().trim();
+        String numTarjeta = etNumTarjeta.getText().toString().replace(" ", "");
+        String caducidad = etCaducidad.getText().toString().trim();
+        String cvv = etCVV.getText().toString().trim();
+
+        if (titular.isEmpty() || titular.length() < 2) {
+            etTitular.setError("Introduce el nombre del titular");
+            etTitular.requestFocus();
+            return;
+        }
+        if (numTarjeta.length() != 16 || !numTarjeta.matches("\\d{16}")) {
+            etNumTarjeta.setError("Debe tener 16 dígitos");
+            etNumTarjeta.requestFocus();
+            return;
+        }
+        if (!caducidad.matches("\\d{2}/\\d{2}")) {
+            etCaducidad.setError("Formato MM/AA");
+            etCaducidad.requestFocus();
+            return;
+        }
+        try {
+            int mes = Integer.parseInt(caducidad.substring(0, 2));
+            if (mes < 1 || mes > 12) {
+                etCaducidad.setError("Mes inválido");
+                etCaducidad.requestFocus();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            etCaducidad.setError("Formato MM/AA");
+            etCaducidad.requestFocus();
+            return;
+        }
+        if (!cvv.matches("\\d{3}")) {
+            etCVV.setError("3 dígitos");
+            etCVV.requestFocus();
             return;
         }
 
@@ -135,9 +168,10 @@ public class CheckoutActivity extends AppCompatActivity {
             public void onResponse(Call<Reserva> call, Response<Reserva> response) {
                 progressBarPago.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(CheckoutActivity.this, "Reserva confirmada \u2713", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(CheckoutActivity.this, ReservasActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    Toast.makeText(CheckoutActivity.this, "Reserva confirmada \u2713", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(CheckoutActivity.this, DetalleReservaActivity.class);
+                    intent.putExtra(DetalleReservaActivity.EXTRA_RESERVA, response.body());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 } else {

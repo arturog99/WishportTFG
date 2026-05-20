@@ -2,28 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/bg_screen">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mis Reservas"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="16dp"
-        android:background="#E0E0E0" />
+        android:orientation="vertical"
+        android:background="@color/primary"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WishPort"
+            android:textSize="14sp"
+            android:textColor="#B0C4DE" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mis Reservas"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvReservas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:padding="6dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@color/surface"
+        android:elevation="6dp">
 
         <Button
             android:id="@+id/btnPistas"
@@ -31,7 +49,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:text="Pistas" />
+            android:text="Pistas"
+            android:textColor="@color/primary"
+            android:backgroundTint="@color/badge_bg" />
 
         <Button
             android:id="@+id/btnPerfil"
@@ -39,7 +59,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:text="Perfil" />
+            android:text="Perfil"
+            android:textColor="@color/primary"
+            android:backgroundTint="@color/badge_bg" />
 
         <Button
             android:id="@+id/btnLogout"
@@ -47,8 +69,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:text="Salir" />
+            android:text="Salir"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/danger" />
 
     </LinearLayout>
 
 </LinearLayout>
+

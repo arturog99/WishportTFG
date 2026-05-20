@@ -17,15 +17,24 @@ import java.util.List;
 
 public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaViewHolder> {
 
+    public interface OnReservaClickListener {
+        void onReservaClick(Reserva reserva);
+    }
+
     private List<Reserva> reservas = new ArrayList<>();
+    private OnReservaClickListener listener;
 
     public ReservaAdapter(List<Reserva> reservas) {
-        this.reservas = reservas;
+        if (reservas != null) this.reservas = reservas;
+    }
+
+    public void setOnReservaClickListener(OnReservaClickListener listener) {
+        this.listener = listener;
     }
 
     public void actualizarLista(List<Reserva> nuevasReservas) {
         this.reservas.clear();
-        this.reservas.addAll(nuevasReservas);
+        if (nuevasReservas != null) this.reservas.addAll(nuevasReservas);
         notifyDataSetChanged();
     }
 
@@ -43,10 +52,14 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         String deporte = reserva.getIdPista() != null ? reserva.getIdPista().getDeporte() : "Desconocido";
         String fecha = reserva.getFecha() != null ? reserva.getFecha().toLocalDate().toString() : "";
         String hora = reserva.getHoraInicio() != null ? reserva.getHoraInicio() : "";
-        String info = fecha + " - " + hora;
+        String info = fecha + " · " + hora;
         
         holder.tvDeporte.setText(deporte);
         holder.tvInfoReserva.setText(info);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onReservaClick(reserva);
+        });
     }
 
     @Override

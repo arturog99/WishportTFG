@@ -53,7 +53,9 @@ public class AdminActivity extends AppCompatActivity {
 
         tokenManager = new TokenManager(this);
 
-        validarAccesoAdmin();
+        if (!validarAccesoAdmin()) {
+            return;
+        }
 
         vincularVistas();
 
@@ -68,13 +70,15 @@ public class AdminActivity extends AppCompatActivity {
         cargarReservasDelDia();
     }
 
-    private void validarAccesoAdmin() {
+    private boolean validarAccesoAdmin() {
         SharedPreferences prefs = getSharedPreferences("WishPortPrefs", MODE_PRIVATE);
         String rol = prefs.getString("rolUsuario", "");
         if (!"ADMIN".equals(rol)) {
             Toast.makeText(this, "Acceso denegado: No eres administrador", Toast.LENGTH_SHORT).show();
             finish();
+            return false;
         }
+        return true;
     }
 
     private void vincularVistas() {

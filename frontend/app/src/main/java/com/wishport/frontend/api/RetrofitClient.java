@@ -6,8 +6,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import okhttp3.OkHttpClient;
@@ -18,28 +17,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static Gson buildGson() {
-        DateTimeFormatter dateFmt = DateTimeFormatter.ISO_LOCAL_DATE;
-        DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter dateTimeFmt = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-        JsonSerializer<LocalDate> dateSer = (src, typeOfSrc, ctx) ->
-                new com.google.gson.JsonPrimitive(src.format(dateFmt));
-        JsonDeserializer<LocalDate> dateDes = (json, typeOfT, ctx) ->
-                LocalDate.parse(json.getAsString(), dateFmt);
-
-        JsonSerializer<LocalTime> timeSer = (src, typeOfSrc, ctx) ->
-                new com.google.gson.JsonPrimitive(src.format(timeFmt));
-        JsonDeserializer<LocalTime> timeDes = (json, typeOfT, ctx) -> {
+        JsonSerializer<LocalDateTime> dtSer = (src, typeOfSrc, ctx) ->
+                new com.google.gson.JsonPrimitive(src.format(dateTimeFmt));
+        JsonDeserializer<LocalDateTime> dtDes = (json, typeOfT, ctx) -> {
             String s = json.getAsString();
-            // Acepta "HH:mm" y "HH:mm:ss"
-            if (s.length() == 5) s = s + ":00";
-            return LocalTime.parse(s, timeFmt);
+            // Tolerar "yyyy-MM-dd" como medianoche
+            if (s.length() == 10) s = s + "T00:00:00";
+            // Quitar zona/offset si viene
+            if (s.endsWith("Z")) s = s.substring(0, s.length() - 1);
+            return LocalDateTime.parse(s);
         };
 
         return new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, dateSer)
-                .registerTypeAdapter(LocalDate.class, dateDes)
-                .registerTypeAdapter(LocalTime.class, timeSer)
-                .registerTypeAdapter(LocalTime.class, timeDes)
+                .registerTypeAdapter(LocalDateTime.class, dtSer)
+                .registerTypeAdapter(LocalDateTime.class, dtDes)
                 .create();
     }
 

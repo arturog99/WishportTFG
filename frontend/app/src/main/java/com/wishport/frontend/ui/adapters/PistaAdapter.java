@@ -16,12 +16,21 @@ import java.util.List;
 
 public class PistaAdapter extends RecyclerView.Adapter<PistaAdapter.PistaViewHolder> {
 
+    public interface OnPistaClickListener {
+        void onPistaClick(Pista pista);
+    }
+
     private List<Pista> pistas = new ArrayList<>();
+    private OnPistaClickListener listener;
 
     public PistaAdapter(List<Pista> pistas) {
         if (pistas != null) {
             this.pistas = pistas;
         }
+    }
+
+    public void setOnPistaClickListener(OnPistaClickListener listener) {
+        this.listener = listener;
     }
 
     public void actualizarLista(List<Pista> nuevasPistas) {
@@ -45,6 +54,9 @@ public class PistaAdapter extends RecyclerView.Adapter<PistaAdapter.PistaViewHol
         holder.tvNombre.setText(pista.getNombre() != null ? pista.getNombre() : "Sin nombre");
         holder.tvDeporte.setText(pista.getDeporte() != null ? pista.getDeporte() : "");
         holder.tvEstado.setText(pista.getEstado() != null ? pista.getEstado() : "");
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onPistaClick(pista);
+        });
     }
 
     @Override

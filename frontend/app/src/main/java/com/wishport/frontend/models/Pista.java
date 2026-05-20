@@ -1,6 +1,8 @@
 package com.wishport.frontend.models;
 
-public class Pista {
+import java.io.Serializable;
+
+public class Pista implements Serializable {
     private Integer idPista;
     private String nombre;
     private String deporte;

@@ -174,7 +174,7 @@ public class AdminActivity extends AppCompatActivity {
     private void hacerLogout() {
         getSharedPreferences("WishPortPrefs", MODE_PRIVATE).edit().clear().apply();
         tokenManager.clearToken();
-        // startActivity(new Intent(this, LoginActivity.class)); // TODO: Descomentar cuando LoginActivity exista
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 

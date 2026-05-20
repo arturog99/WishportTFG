@@ -11,7 +11,9 @@ import com.wishport.frontend.R;
 import com.wishport.frontend.api.ApiService;
 import com.wishport.frontend.api.RetrofitClient;
 import com.wishport.frontend.models.Pista;
+import com.wishport.frontend.ui.adapters.PistaAdapter;
 import com.wishport.frontend.utils.TokenManager;
+import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +23,7 @@ public class PistasActivity extends AppCompatActivity {
     private RecyclerView rvPistas;
     private Button btnReservas, btnPerfil, btnLogout;
     private TokenManager tokenManager;
+    private PistaAdapter pistaAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class PistasActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
 
         rvPistas.setLayoutManager(new LinearLayoutManager(this));
+        pistaAdapter = new PistaAdapter(new ArrayList<>());
+        rvPistas.setAdapter(pistaAdapter);
 
         btnReservas.setOnClickListener(v -> {
             Intent intent = new Intent(this, ReservasActivity.class);
@@ -63,15 +68,19 @@ public class PistasActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Pista>> call, Response<List<Pista>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // TODO: Crear PistaAdapter y usarlo aquí
-                    // rvPistas.setAdapter(new PistaAdapter(response.body()));
-                    Toast.makeText(PistasActivity.this, "Pistas cargadas: " + response.body().size(), Toast.LENGTH_SHORT).show();
+                    pistaAdapter.actualizarLista(response.body());
+                    if (response.body().isEmpty()) {
+                        Toast.makeText(PistasActivity.this, "No hay pistas disponibles", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(PistasActivity.this, "Error al cargar pistas (" + response.code() + ")", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Pista>> call, Throwable t) {
-                Toast.makeText(PistasActivity.this, "Error al cargar pistas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PistasActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                t.printStackTrace();
             }
         });
     }

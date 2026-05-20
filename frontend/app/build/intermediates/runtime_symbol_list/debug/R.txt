@@ -3583,6 +3583,8 @@ int id transition_position 0x7f0801dc
 int id transition_scene_layoutid_cache 0x7f0801dd
 int id transition_transform 0x7f0801de
 int id triangle 0x7f0801df
+int id tvEstado 0x7f080204
+int id tvFecha 0x7f080205
 int id unchecked 0x7f0801e0
 int id uniform 0x7f0801e1
 int id unlabeled 0x7f0801e2
@@ -3753,6 +3755,7 @@ int layout design_text_input_end_icon 0x7f0b002c
 int layout design_text_input_start_icon 0x7f0b002d
 int layout ime_base_split_test_activity 0x7f0b002e
 int layout ime_secondary_split_test_activity 0x7f0b002f
+int layout item_reserva 0x7f0b006f
 int layout m3_alert_dialog 0x7f0b0030
 int layout m3_alert_dialog_actions 0x7f0b0031
 int layout m3_alert_dialog_title 0x7f0b0032

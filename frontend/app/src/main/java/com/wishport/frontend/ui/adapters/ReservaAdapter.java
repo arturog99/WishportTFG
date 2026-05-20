@@ -40,8 +40,8 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     public void onBindViewHolder(@NonNull ReservaViewHolder holder, int position) {
         Reserva reserva = reservas.get(position);
         
-        String deporte = reserva.getPista() != null ? reserva.getPista().getDeporte() : "Desconocido";
-        String info = reserva.getFecha() + " - " + reserva.getHora();
+        String deporte = reserva.getIdPista() != null ? reserva.getIdPista().getDeporte() : "Desconocido";
+        String info = reserva.getFecha() + " - " + reserva.getHoraInicio();
         
         holder.tvDeporte.setText(deporte);
         holder.tvInfoReserva.setText(info);

@@ -16,7 +16,10 @@ id btnLogout
 id emptyStateLayout
 id progressBar
 id recyclerViewReservasHoy
+id tvEstado
+id tvFecha
 layout activity_admin
 layout activity_main
+layout item_reserva
 string app_name
 style Theme.WishPort

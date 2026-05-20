@@ -27,8 +27,8 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     @Override
     public void onBindViewHolder(@NonNull ReservaViewHolder holder, int position) {
         Reserva reserva = reservas.get(position);
-        holder.tvFecha.setText(reserva.getFecha() != null ? reserva.getFecha().toString() : "Sin fecha");
-        holder.tvEstado.setText(reserva.getEstadoReserva() != null ? reserva.getEstadoReserva() : "Sin estado");
+        holder.tvDeporte.setText(reserva.getIdPista() != null ? reserva.getIdPista().getDeporte() : "Desconocido");
+        holder.tvInfoReserva.setText(reserva.getFecha() != null ? reserva.getFecha().toString() : "Sin fecha");
     }
 
     @Override
@@ -37,12 +37,12 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     }
 
     static class ReservaViewHolder extends RecyclerView.ViewHolder {
-        TextView tvFecha, tvEstado;
+        TextView tvDeporte, tvInfoReserva;
 
         public ReservaViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvFecha = itemView.findViewById(R.id.tvFecha);
-            tvEstado = itemView.findViewById(R.id.tvEstado);
+            tvDeporte = itemView.findViewById(R.id.tvDeporte);
+            tvInfoReserva = itemView.findViewById(R.id.tvInfoReserva);
         }
     }
 }

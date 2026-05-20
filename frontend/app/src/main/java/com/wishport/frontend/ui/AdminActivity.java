@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.wishport.frontend.R;
-import com.wishport.frontend.adapters.ReservaAdapter;
+import com.wishport.frontend.ui.adapters.ReservaAdapter;
 import com.wishport.frontend.api.RetrofitClient;
 import com.wishport.frontend.utils.TokenManager;
 import com.wishport.frontend.models.Reserva;
@@ -85,10 +85,11 @@ public class AdminActivity extends AppCompatActivity {
 
     private void cargarReservasDelDia() {
         String token = tokenManager.getToken();
+        Integer userId = tokenManager.getUserId();
         progressBar.setVisibility(View.VISIBLE);
         emptyStateLayout.setVisibility(View.GONE);
 
-        RetrofitClient.getApiService(token).getReservas().enqueue(new Callback<List<Reserva>>() {
+        RetrofitClient.getApiService(token).getReservasUsuario(userId).enqueue(new Callback<List<Reserva>>() {
             @Override
             public void onResponse(Call<List<Reserva>> call, Response<List<Reserva>> response) {
                 progressBar.setVisibility(View.GONE);
@@ -173,7 +174,7 @@ public class AdminActivity extends AppCompatActivity {
     private void hacerLogout() {
         getSharedPreferences("WishPortPrefs", MODE_PRIVATE).edit().clear().apply();
         tokenManager.clearToken();
-        startActivity(new Intent(this, LoginActivity.class));
+        // startActivity(new Intent(this, LoginActivity.class)); // TODO: Descomentar cuando LoginActivity exista
         finish();
     }
 
@@ -246,36 +247,8 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void crearAdmin(Usuario usuario, AlertDialog dialog) {
-        String token = tokenManager.getToken();
-        RetrofitClient.getApiService(token).crearAdmin(usuario).enqueue(new Callback<Usuario>() {
-            @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(AdminActivity.this,
-                            "Administrador creado: " + response.body().getNombre(),
-                            Toast.LENGTH_LONG).show();
-                    dialog.dismiss();
-                } else if (response.code() == 403) {
-                    Toast.makeText(AdminActivity.this,
-                            "No tienes permisos para crear administradores",
-                            Toast.LENGTH_LONG).show();
-                } else if (response.code() == 409) {
-                    Toast.makeText(AdminActivity.this,
-                            "Este email ya está registrado",
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(AdminActivity.this,
-                            "Error al crear administrador: " + response.code(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-                Toast.makeText(AdminActivity.this,
-                        "Error de conexión: " + t.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+        // TODO: Implementar cuando el endpoint crearAdmin exista en backend
+        Toast.makeText(AdminActivity.this, "Función crearAdmin pendiente de implementación", Toast.LENGTH_SHORT).show();
+        dialog.dismiss();
     }
 }

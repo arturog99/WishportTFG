@@ -21,7 +21,7 @@ import com.wishport.frontend.models.Usuario;
 import com.wishport.frontend.utils.TokenManager;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -122,9 +122,10 @@ public class CheckoutActivity extends AppCompatActivity {
         usuario.setIdUsuario(userId);
 
         Reserva reserva = new Reserva();
-        reserva.setFecha(LocalDate.parse(fechaStr));
-        reserva.setHoraInicio(LocalTime.of(horaInicio, 0));
-        reserva.setHoraFin(LocalTime.of(horaInicio + 1, 0));
+        // Backend tiene fecha=LocalDateTime; lo enviamos con la hora seleccionada
+        reserva.setFecha(LocalDate.parse(fechaStr).atTime(horaInicio, 0));
+        reserva.setHoraInicio(String.format("%02d:00", horaInicio));
+        reserva.setHoraFin(String.format("%02d:00", horaInicio + 1));
         reserva.setIdPista(pista);
         reserva.setIdUsuario(usuario);
         reserva.setEstadoReserva("ACTIVA");

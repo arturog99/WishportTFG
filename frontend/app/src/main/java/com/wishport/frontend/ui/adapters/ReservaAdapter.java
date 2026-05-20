@@ -41,7 +41,9 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         Reserva reserva = reservas.get(position);
         
         String deporte = reserva.getIdPista() != null ? reserva.getIdPista().getDeporte() : "Desconocido";
-        String info = reserva.getFecha() + " - " + reserva.getHoraInicio();
+        String fecha = reserva.getFecha() != null ? reserva.getFecha().toLocalDate().toString() : "";
+        String hora = reserva.getHoraInicio() != null ? reserva.getHoraInicio() : "";
+        String info = fecha + " - " + hora;
         
         holder.tvDeporte.setText(deporte);
         holder.tvInfoReserva.setText(info);

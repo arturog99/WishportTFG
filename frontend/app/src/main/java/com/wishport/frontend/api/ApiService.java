@@ -30,6 +30,9 @@ public interface ApiService {
     @GET("pistas")
     Call<List<Pista>> getPistas();
 
+    @GET("reservas")
+    Call<List<Reserva>> getReservas();
+
     @GET("reservas/usuario/{id}")
     Call<List<Reserva>> getReservasUsuario(@Path("id") Integer id);
 
@@ -41,4 +44,6 @@ public interface ApiService {
 
     @DELETE("reservas/{id}")
     Call<Void> cancelarReserva(@Path("id") Integer id);
+
+
 }

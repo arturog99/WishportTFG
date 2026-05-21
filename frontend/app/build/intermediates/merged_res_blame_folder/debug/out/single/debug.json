@@ -1,34 +1,74 @@
 [
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_admin.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/activity_admin.xml"
+        "merged": "com.wishport.frontend.app-merged_res-33:/drawable_placeholder_pista.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/drawable/placeholder_pista.xml"
     },
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_pistas.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/activity_pistas.xml"
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_registro.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_registro.xml"
     },
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_registro.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/activity_registro.xml"
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_item_pista.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\item_pista.xml"
     },
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_reservas.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/activity_reservas.xml"
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_checkout.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_checkout.xml"
     },
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_main.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/activity_main.xml"
+        "merged": "com.wishport.frontend.app-merged_res-33:/drawable_image_rounded_bg.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/drawable/image_rounded_bg.xml"
     },
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_perfil.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/activity_perfil.xml"
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_detalle_pista.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_detalle_pista.xml"
     },
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_item_reserva.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/item_reserva.xml"
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_perfil.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_perfil.xml"
     },
     {
-        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_login.xml.flat",
-        "source": "com.wishport.frontend.app-main-35:/layout/activity_login.xml"
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_item_reserva.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\item_reserva.xml"
+    },
+    {
+        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_detalle_reserva.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/layout/activity_detalle_reserva.xml"
+    },
+    {
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_reservas.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_reservas.xml"
+    },
+    {
+        "merged": "com.wishport.frontend.app-merged_res-33:/drawable_error_pista.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/drawable/error_pista.xml"
+    },
+    {
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_detalle_reserva.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_detalle_reserva.xml"
+    },
+    {
+        "merged": "com.wishport.frontend.app-merged_res-33:/layout_activity_detalle_pista.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/layout/activity_detalle_pista.xml"
+    },
+    {
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_admin.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_admin.xml"
+    },
+    {
+        "merged": "com.wishport.frontend.app-merged_res-33:/layout_item_pista.xml.flat",
+        "source": "com.wishport.frontend.app-main-35:/layout/item_pista.xml"
+    },
+    {
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_pistas.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_pistas.xml"
+    },
+    {
+        "merged": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-merged_res-33:\\layout_activity_login.xml.flat",
+        "source": "C:\\Users\\Arturo\\.gradle\\daemon\\9.0-milestone-1\\com.wishport.frontend.app-main-35:\\layout\\activity_login.xml"
     }
 ]

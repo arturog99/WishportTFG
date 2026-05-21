@@ -14,19 +14,32 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-// Controlador REST para gestionar las reservas
-// Expone endpoints para crear, listar y cancelar reservas
+/**
+ * Controlador REST para gestionar las reservas
+ * Expone endpoints para crear, listar, filtrar y cancelar reservas
+ * Base path: /api/reservas
+ */
 @RestController
 @RequestMapping("/api/reservas")
 @CrossOrigin(origins = "*")
 public class ReservaController {
 
+    /**
+     * Repositorio de reservas para acceder a la base de datos
+     * Proporciona métodos CRUD para la entidad Reserva
+     */
     @Autowired
     private ReservaRepository reservaRepository;
 
+    /**
+     * Repositorio de usuarios para validar que el usuario existe
+     */
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * Repositorio de pistas para validar que la pista existe
+     */
     @Autowired
     private PistaRepository pistaRepository;
 
@@ -34,6 +47,12 @@ public class ReservaController {
      * Endpoint para obtener todas las reservas
      * GET /api/reservas
      * Requiere token JWT
+     * 
+     * @return ResponseEntity con lista de todas las reservas del sistema
+     * 
+     * Proceso:
+     * 1. Busca todas las reservas en la base de datos
+     * 2. Retorna la lista completa de reservas
      */
     @GetMapping
     public ResponseEntity<List<Reserva>> getAllReservas() {
@@ -45,6 +64,13 @@ public class ReservaController {
      * Endpoint para obtener reservas de un usuario específico
      * GET /api/reservas/usuario/{idUsuario}
      * Requiere token JWT
+     * 
+     * @param idUsuario ID del usuario cuyas reservas se quieren obtener
+     * @return ResponseEntity con lista de reservas del usuario especificado
+     * 
+     * Proceso:
+     * 1. Busca reservas por ID de usuario en la base de datos
+     * 2. Retorna la lista de reservas del usuario
      */
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<List<Reserva>> getReservasByUsuario(@PathVariable Integer idUsuario) {
@@ -56,6 +82,13 @@ public class ReservaController {
      * Endpoint para obtener reservas de una pista específica
      * GET /api/reservas/pista/{idPista}
      * Requiere token JWT
+     * 
+     * @param idPista ID de la pista cuyas reservas se quieren obtener
+     * @return ResponseEntity con lista de reservas de la pista especificada
+     * 
+     * Proceso:
+     * 1. Busca reservas por ID de pista en la base de datos
+     * 2. Retorna la lista de reservas de la pista
      */
     @GetMapping("/pista/{idPista}")
     public ResponseEntity<List<Reserva>> getReservasByPista(@PathVariable Integer idPista) {
@@ -67,7 +100,18 @@ public class ReservaController {
      * Endpoint para crear una nueva reserva
      * POST /api/reservas
      * Requiere token JWT
-     * Genera un código QR único automáticamente
+     * Genera un código QR único automáticamente para validar el acceso
+     * 
+     * @param reserva Objeto Reserva con los datos de la nueva reserva
+     * @return ResponseEntity con la reserva creada o error si los datos son inválidos
+     * 
+     * Proceso:
+     * 1. Verifica que el usuario existe en la base de datos
+     * 2. Verifica que la pista existe en la base de datos
+     * 3. Genera un código QR único usando UUID
+     * 4. Establece la fecha (si no viene en la petición) y el estado a "ACTIVA"
+     * 5. Guarda la reserva en la base de datos
+     * 6. Retorna la reserva creada con su código QR
      */
     @PostMapping
     public ResponseEntity<?> createReserva(@RequestBody Reserva reserva) {
@@ -94,12 +138,16 @@ public class ReservaController {
         }
 
         // Generar código QR único para la reserva
+        // UUID.randomUUID() genera un identificador único universal
         String codigoQr = UUID.randomUUID().toString();
         reserva.setCodigoQr(codigoQr);
+        
         // Mantener la fecha enviada por el cliente; solo poner ahora si no se envía
         if (reserva.getFecha() == null) {
             reserva.setFecha(LocalDateTime.now());
         }
+        
+        // Establecer el estado de la reserva como ACTIVA
         reserva.setEstadoReserva("ACTIVA");
 
         // Guardar la reserva en la base de datos
@@ -112,13 +160,24 @@ public class ReservaController {
      * Endpoint para cancelar una reserva
      * DELETE /api/reservas/{id}
      * Requiere token JWT
+     * Elimina permanentemente la reserva de la base de datos
+     * 
+     * @param id ID de la reserva a cancelar
+     * @return ResponseEntity con 200 si se canceló correctamente o 404 si no existe
+     * 
+     * Proceso:
+     * 1. Verifica que la reserva existe
+     * 2. Si existe, la elimina de la base de datos
+     * 3. Si no existe, retorna 404 Not Found
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> cancelReserva(@PathVariable Integer id) {
+        // Verificar que la reserva existe antes de eliminarla
         if (!reservaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
 
+        // Eliminar la reserva de la base de datos
         reservaRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

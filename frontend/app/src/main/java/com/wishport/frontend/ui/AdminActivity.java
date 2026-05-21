@@ -155,6 +155,8 @@ public class AdminActivity extends AppCompatActivity {
         integrator.setPrompt("Enfoca el código QR del usuario");
         integrator.setBeepEnabled(true);
         integrator.setOrientationLocked(true);
+        integrator.setBarcodeImageEnabled(false);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.initiateScan();
     }
 
@@ -193,35 +195,66 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void hacerLogout() {
-        getSharedPreferences("WishPortPrefs", MODE_PRIVATE).edit().clear().apply();
-        tokenManager.clearToken();
-        startActivity(new Intent(this, LoginActivity.class));
-        finish();
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Cerrar sesión")
+            .setMessage("¿Estás seguro de que quieres cerrar sesión?")
+            .setPositiveButton("Cerrar sesión", (dialog, which) -> {
+                getSharedPreferences("WishPortPrefs", MODE_PRIVATE).edit().clear().apply();
+                tokenManager.clearToken();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            })
+            .setNegativeButton("Cancelar", null)
+            .show();
     }
 
     private void mostrarDialogoCrearAdmin() {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(40, 20, 40, 20);
+        layout.setPadding(50, 30, 50, 30);
 
         EditText etNombre = new EditText(this);
         etNombre.setHint("Nombre completo");
         etNombre.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        LinearLayout.LayoutParams paramsNombre = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        paramsNombre.setMargins(0, 0, 0, 20);
+        etNombre.setLayoutParams(paramsNombre);
         layout.addView(etNombre);
 
         EditText etEmail = new EditText(this);
         etEmail.setHint("Email");
         etEmail.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        LinearLayout.LayoutParams paramsEmail = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        paramsEmail.setMargins(0, 0, 0, 20);
+        etEmail.setLayoutParams(paramsEmail);
         layout.addView(etEmail);
 
         EditText etPassword = new EditText(this);
-        etPassword.setHint("Contraseña");
+        etPassword.setHint("Contraseña (mínimo 6 caracteres)");
         etPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        LinearLayout.LayoutParams paramsPassword = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        paramsPassword.setMargins(0, 0, 0, 20);
+        etPassword.setLayoutParams(paramsPassword);
         layout.addView(etPassword);
 
         EditText etTelefono = new EditText(this);
         etTelefono.setHint("Teléfono");
         etTelefono.setInputType(android.text.InputType.TYPE_CLASS_PHONE);
+        LinearLayout.LayoutParams paramsTelefono = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        paramsTelefono.setMargins(0, 0, 0, 0);
+        etTelefono.setLayoutParams(paramsTelefono);
         layout.addView(etTelefono);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -241,18 +274,32 @@ public class AdminActivity extends AppCompatActivity {
 
             if (nombre.isEmpty()) {
                 etNombre.setError("El nombre es obligatorio");
+                etNombre.requestFocus();
                 return;
             }
             if (email.isEmpty()) {
                 etEmail.setError("El email es obligatorio");
+                etEmail.requestFocus();
+                return;
+            }
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                etEmail.setError("Email inválido");
+                etEmail.requestFocus();
                 return;
             }
             if (password.isEmpty()) {
                 etPassword.setError("La contraseña es obligatoria");
+                etPassword.requestFocus();
+                return;
+            }
+            if (password.length() < 6) {
+                etPassword.setError("La contraseña debe tener al menos 6 caracteres");
+                etPassword.requestFocus();
                 return;
             }
             if (telefono.isEmpty()) {
                 etTelefono.setError("El teléfono es obligatorio");
+                etTelefono.requestFocus();
                 return;
             }
 
@@ -276,18 +323,21 @@ public class AdminActivity extends AppCompatActivity {
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(AdminActivity.this, "Administrador creado exitosamente", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivity.this, "✅ Administrador creado exitosamente", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                     cargarReservasDelDia();
                 } else {
-                    Toast.makeText(AdminActivity.this, "Error al crear administrador", Toast.LENGTH_SHORT).show();
+                    String errorMsg = response.code() == 403 ? 
+                        "No tienes permiso para crear administradores" : 
+                        "Error al crear administrador";
+                    Toast.makeText(AdminActivity.this, "❌ " + errorMsg, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Usuario> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(AdminActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivity.this, "❌ Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
     }

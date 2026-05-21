@@ -36,7 +36,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilita CORS
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin sesión (stateless)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/usuarios/register", "/api/usuarios/login").permitAll() // Públicos
+                .requestMatchers("/api/usuarios/register", "/api/usuarios/login", "/images/**").permitAll() // Públicos
                 .anyRequest().authenticated() // El resto requieren token
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Añade filtro JWT antes del filtro de autenticación

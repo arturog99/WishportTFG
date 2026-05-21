@@ -7,5 +7,12 @@
         <item name="android:statusBarColor">@color/primary_dark</item>
         <item name="android:windowBackground">@color/bg_screen</item>
     </style>
+
+    <!-- Tema para Splash Screen -->
+    <style name="Theme.Splash" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@drawable/logo</item>
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
 </resources>
 

@@ -271,7 +271,7 @@ public class AdminActivity extends AppCompatActivity {
         String token = tokenManager.getToken();
         progressBar.setVisibility(View.VISIBLE);
 
-        RetrofitClient.getApiService(token).register(usuario).enqueue(new Callback<Usuario>() {
+        RetrofitClient.getApiService(token).crearAdmin(usuario).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 progressBar.setVisibility(View.GONE);

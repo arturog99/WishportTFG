@@ -4,7 +4,7 @@
             "outputFile": "com.wishport.frontend.app-mergeDebugResources-31:/values-id/values-id.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Arturo\\.gradle\\caches\\9.0-milestone-1\\transforms\\8b53b2716d4be7c1e56ab2876136ca40\\transformed\\jetified-zxing-android-embedded-4.3.0\\res\\values-id\\values-id.xml",
+                    "source": "C:\\Users\\Arturo\\.gradle\\caches\\transforms-3\\b33313696ed4c5c6edd459fe2099cca5\\transformed\\jetified-zxing-android-embedded-4.3.0\\res\\values-id\\values-id.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

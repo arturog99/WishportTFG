@@ -51,4 +51,38 @@ public class PistaController {
         List<Pista> pistas = pistaRepository.findByDeporte(deporte);
         return ResponseEntity.ok(pistas);
     }
+
+    /**
+     * Endpoint para actualizar las rutas de imágenes de todas las pistas
+     * PUT /api/pistas/actualizar-imagenes
+     * Requiere token JWT
+     */
+    @PutMapping("/actualizar-imagenes")
+    public ResponseEntity<String> actualizarImagenes() {
+        List<Pista> pistas = pistaRepository.findAll();
+        int actualizadas = 0;
+        
+        for (Pista pista : pistas) {
+            String deporte = pista.getDeporte();
+            String nuevaUrl = null;
+            
+            if (deporte != null) {
+                if (deporte.equalsIgnoreCase("Pádel")) {
+                    nuevaUrl = "/images/padel.png";
+                } else if (deporte.equalsIgnoreCase("Fútbol 7") || deporte.equalsIgnoreCase("Fútbol 11") || deporte.equalsIgnoreCase("Futsal")) {
+                    nuevaUrl = "/images/futsal.png";
+                } else if (deporte.equalsIgnoreCase("Baloncesto")) {
+                    nuevaUrl = "/images/basket.png";
+                }
+            }
+            
+            if (nuevaUrl != null && !nuevaUrl.equals(pista.getFotoUrl())) {
+                pista.setFotoUrl(nuevaUrl);
+                pistaRepository.save(pista);
+                actualizadas++;
+            }
+        }
+        
+        return ResponseEntity.ok("Se actualizaron " + actualizadas + " pistas");
+    }
 }

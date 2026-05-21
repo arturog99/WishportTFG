@@ -28,6 +28,7 @@ import com.wishport.frontend.utils.TokenManager;
 import com.wishport.frontend.models.Reserva;
 import com.wishport.frontend.models.Usuario;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,12 +62,23 @@ public class AdminActivity extends AppCompatActivity {
 
         recyclerViewReservas.setLayoutManager(new LinearLayoutManager(this));
         reservaAdapter = new ReservaAdapter(new ArrayList<>());
+        reservaAdapter.setOnReservaClickListener(reserva -> {
+            Intent intent = new Intent(this, DetalleReservaActivity.class);
+            intent.putExtra(DetalleReservaActivity.EXTRA_RESERVA, reserva);
+            startActivity(intent);
+        });
         recyclerViewReservas.setAdapter(reservaAdapter);
 
         findViewById(R.id.btnLogout).setOnClickListener(v -> hacerLogout());
         findViewById(R.id.btnCrearAdmin).setOnClickListener(v -> mostrarDialogoCrearAdmin());
         findViewById(R.id.btnEscanearQr).setOnClickListener(v -> solicitarPermisoCamara());
 
+        cargarReservasDelDia();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         cargarReservasDelDia();
     }
 
@@ -89,17 +101,21 @@ public class AdminActivity extends AppCompatActivity {
 
     private void cargarReservasDelDia() {
         String token = tokenManager.getToken();
-        Integer userId = tokenManager.getUserId();
         progressBar.setVisibility(View.VISIBLE);
         emptyStateLayout.setVisibility(View.GONE);
 
-        RetrofitClient.getApiService(token).getReservasUsuario(userId).enqueue(new Callback<List<Reserva>>() {
+        RetrofitClient.getApiService(token).getReservas().enqueue(new Callback<List<Reserva>>() {
             @Override
             public void onResponse(Call<List<Reserva>> call, Response<List<Reserva>> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
                     reservasHoy.clear();
-                    reservasHoy.addAll(response.body());
+                    LocalDate hoy = LocalDate.now();
+                    for (Reserva r : response.body()) {
+                        if (r.getFecha() != null && r.getFecha().toLocalDate().equals(hoy)) {
+                            reservasHoy.add(r);
+                        }
+                    }
                     actualizarInterfaz();
                 } else {
                     Toast.makeText(AdminActivity.this, "Error al cargar reservas", Toast.LENGTH_SHORT).show();

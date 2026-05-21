@@ -12,7 +12,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 import com.wishport.frontend.R;
+import com.wishport.frontend.api.ApiService;
 import com.wishport.frontend.api.RetrofitClient;
 import com.wishport.frontend.models.Pista;
 import com.wishport.frontend.models.Reserva;
@@ -43,6 +47,7 @@ public class DetallePistaActivity extends AppCompatActivity {
     private static final int HORA_CIERRE = 22;
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private ImageView ivDetallePista;
     private TextView tvNombre, tvDeporte, tvEstado, tvFechaSeleccionada;
     private Button btnSeleccionarFecha, btnReservar;
     private GridLayout gridHorarios;
@@ -59,6 +64,7 @@ public class DetallePistaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_pista);
 
+        ivDetallePista = findViewById(R.id.ivDetallePista);
         tvNombre = findViewById(R.id.tvDetalleNombre);
         tvDeporte = findViewById(R.id.tvDetalleDeporte);
         tvEstado = findViewById(R.id.tvDetalleEstado);
@@ -94,6 +100,18 @@ public class DetallePistaActivity extends AppCompatActivity {
     private void mostrarInfoPista() {
         tvNombre.setText(pistaActual.getNombre() != null ? pistaActual.getNombre() : "Pista");
         tvDeporte.setText("Deporte: " + (pistaActual.getDeporte() != null ? pistaActual.getDeporte() : "-"));
+
+        String fotoUrl = pistaActual.getFotoUrl();
+        if (fotoUrl != null && !fotoUrl.isEmpty()) {
+            String fullUrl = ApiService.IMAGES_BASE_URL + (fotoUrl.startsWith("/") ? fotoUrl : "/" + fotoUrl);
+            Glide.with(this)
+                    .load(fullUrl)
+                    .placeholder(R.drawable.placeholder_pista)
+                    .error(R.drawable.error_pista)
+                    .into(ivDetallePista);
+        } else {
+            ivDetallePista.setImageResource(R.drawable.placeholder_pista);
+        }
         tvEstado.setText("Estado: " + (pistaActual.getEstado() != null ? pistaActual.getEstado() : "-"));
         tvFechaSeleccionada.setText("Fecha: " + fechaSeleccionada.format(DATE_FMT));
     }

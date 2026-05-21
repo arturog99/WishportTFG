@@ -3,12 +3,15 @@ package com.wishport.frontend.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.wishport.frontend.R;
+import com.wishport.frontend.api.ApiService;
 import com.wishport.frontend.models.Pista;
 
 import java.util.ArrayList;
@@ -54,6 +57,19 @@ public class PistaAdapter extends RecyclerView.Adapter<PistaAdapter.PistaViewHol
         holder.tvNombre.setText(pista.getNombre() != null ? pista.getNombre() : "Sin nombre");
         holder.tvDeporte.setText(pista.getDeporte() != null ? pista.getDeporte() : "");
         holder.tvEstado.setText(pista.getEstado() != null ? pista.getEstado() : "");
+
+        String fotoUrl = pista.getFotoUrl();
+        if (fotoUrl != null && !fotoUrl.isEmpty()) {
+            String fullUrl = ApiService.IMAGES_BASE_URL + (fotoUrl.startsWith("/") ? fotoUrl : "/" + fotoUrl);
+            Glide.with(holder.itemView.getContext())
+                    .load(fullUrl)
+                    .placeholder(R.drawable.placeholder_pista)
+                    .error(R.drawable.error_pista)
+                    .into(holder.ivPista);
+        } else {
+            holder.ivPista.setImageResource(R.drawable.placeholder_pista);
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onPistaClick(pista);
         });
@@ -65,10 +81,12 @@ public class PistaAdapter extends RecyclerView.Adapter<PistaAdapter.PistaViewHol
     }
 
     static class PistaViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivPista;
         TextView tvNombre, tvDeporte, tvEstado;
 
         public PistaViewHolder(@NonNull View itemView) {
             super(itemView);
+            ivPista = itemView.findViewById(R.id.ivPista);
             tvNombre = itemView.findViewById(R.id.tvNombre);
             tvDeporte = itemView.findViewById(R.id.tvDeporte);
             tvEstado = itemView.findViewById(R.id.tvEstado);

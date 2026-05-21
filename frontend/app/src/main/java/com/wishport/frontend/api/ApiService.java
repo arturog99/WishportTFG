@@ -16,6 +16,7 @@ import retrofit2.http.Path;
 
 public interface ApiService {
     String BASE_URL = "https://wishport-backend.onrender.com/api/";
+    String IMAGES_BASE_URL = "https://wishport-backend.onrender.com";
 
     @POST("usuarios/register")
     Call<Usuario> register(@Body Usuario usuario);

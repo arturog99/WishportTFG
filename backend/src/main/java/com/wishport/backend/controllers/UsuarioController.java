@@ -52,6 +52,39 @@ public class UsuarioController {
     }
 
     /**
+     * Endpoint para crear un nuevo administrador
+     * POST /api/usuarios/admin
+     * Requiere token JWT de administrador
+     */
+    @PostMapping("/admin")
+    public ResponseEntity<?> crearAdmin(@RequestBody Usuario usuario, @RequestHeader("Authorization") String token) {
+        // Verificar que el solicitante sea administrador
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        Optional<Usuario> solicitanteOpt = usuarioRepository.findByEmail(email);
+        
+        if (solicitanteOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado");
+        }
+        
+        Usuario solicitante = solicitanteOpt.get();
+        if (!"ADMIN".equals(solicitante.getRol())) {
+            return ResponseEntity.status(403).body("Solo administradores pueden crear administradores");
+        }
+        
+        // Verificar si el email ya existe
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            return ResponseEntity.badRequest().body("El email ya está registrado");
+        }
+        
+        // Encriptar password y establecer rol ADMIN
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setRol("ADMIN");
+        
+        Usuario adminGuardado = usuarioRepository.save(usuario);
+        return ResponseEntity.ok(adminGuardado);
+    }
+
+    /**
      * Endpoint para hacer login
      * POST /api/usuarios/login
      * Público (no requiere token)

@@ -268,8 +268,27 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void crearAdmin(Usuario usuario, AlertDialog dialog) {
-        // TODO: Implementar cuando el endpoint crearAdmin exista en backend
-        Toast.makeText(AdminActivity.this, "Función crearAdmin pendiente de implementación", Toast.LENGTH_SHORT).show();
-        dialog.dismiss();
+        String token = tokenManager.getToken();
+        progressBar.setVisibility(View.VISIBLE);
+
+        RetrofitClient.getApiService(token).register(usuario).enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                progressBar.setVisibility(View.GONE);
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(AdminActivity.this, "Administrador creado exitosamente", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    cargarReservasDelDia();
+                } else {
+                    Toast.makeText(AdminActivity.this, "Error al crear administrador", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(AdminActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

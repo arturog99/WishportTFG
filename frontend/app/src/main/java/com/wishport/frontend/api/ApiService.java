@@ -24,6 +24,9 @@ public interface ApiService {
     @POST("usuarios/login")
     Call<Map<String, Object>> login(@Body Usuario credenciales);
 
+    @POST("usuarios/admin")
+    Call<Usuario> crearAdmin(@Body Usuario usuario);
+
     @GET("usuarios/{id}")
     Call<Usuario> getUsuario(@Path("id") Integer id);
 

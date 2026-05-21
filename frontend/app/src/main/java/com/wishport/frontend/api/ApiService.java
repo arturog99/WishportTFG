@@ -16,6 +16,7 @@ import retrofit2.http.Path;
 
 public interface ApiService {
     String BASE_URL = "https://wishport-backend.onrender.com/api/";
+    String IMAGES_BASE_URL = "https://wishport-backend.onrender.com";
 
     @POST("usuarios/register")
     Call<Usuario> register(@Body Usuario usuario);
@@ -31,6 +32,9 @@ public interface ApiService {
 
     @GET("reservas/usuario/{id}")
     Call<List<Reserva>> getReservasUsuario(@Path("id") Integer id);
+
+    @GET("reservas/pista/{id}")
+    Call<List<Reserva>> getReservasPista(@Path("id") Integer id);
 
     @POST("reservas")
     Call<Reserva> crearReserva(@Body Reserva reserva);

@@ -96,7 +96,10 @@ public class ReservaController {
         // Generar código QR único para la reserva
         String codigoQr = UUID.randomUUID().toString();
         reserva.setCodigoQr(codigoQr);
-        reserva.setFecha(LocalDateTime.now());
+        // Mantener la fecha enviada por el cliente; solo poner ahora si no se envía
+        if (reserva.getFecha() == null) {
+            reserva.setFecha(LocalDateTime.now());
+        }
         reserva.setEstadoReserva("ACTIVA");
 
         // Guardar la reserva en la base de datos

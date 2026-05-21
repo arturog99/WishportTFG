@@ -61,6 +61,11 @@ public class AdminActivity extends AppCompatActivity {
 
         recyclerViewReservas.setLayoutManager(new LinearLayoutManager(this));
         reservaAdapter = new ReservaAdapter(new ArrayList<>());
+        reservaAdapter.setOnReservaClickListener(reserva -> {
+            Intent intent = new Intent(this, DetalleReservaActivity.class);
+            intent.putExtra(DetalleReservaActivity.EXTRA_RESERVA, reserva);
+            startActivity(intent);
+        });
         recyclerViewReservas.setAdapter(reservaAdapter);
 
         findViewById(R.id.btnLogout).setOnClickListener(v -> hacerLogout());

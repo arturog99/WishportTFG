@@ -80,6 +80,13 @@ public class DetalleReservaActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+        boolean esAdmin = getIntent().getBooleanExtra("ES_ADMIN", false);
+        if (esAdmin) {
+            btnVolverReservas.setText("Volver a lista de reservas");
+            btnVolverReservas.setOnClickListener(v -> {
+                finish();
+            });
+        }
     }
 
     private void rellenarDatosPantalla() {

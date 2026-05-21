@@ -65,6 +65,7 @@ public class AdminActivity extends AppCompatActivity {
         reservaAdapter.setOnReservaClickListener(reserva -> {
             Intent intent = new Intent(this, DetalleReservaActivity.class);
             intent.putExtra(DetalleReservaActivity.EXTRA_RESERVA, reserva);
+            intent.putExtra("ES_ADMIN", true);
             startActivity(intent);
         });
         recyclerViewReservas.setAdapter(reservaAdapter);

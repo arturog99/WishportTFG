@@ -66,7 +66,7 @@ public class SecurityConfig {
             // Configura las reglas de autorización
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos (no requieren token JWT)
-                .requestMatchers("/api/usuarios/register", "/api/usuarios/login", "/images/**", "/api/pistas/actualizar-imagenes").permitAll()
+                .requestMatchers("/api/usuarios/register", "/api/usuarios/login", "/images/**").permitAll()
                 // Todos los demás endpoints requieren autenticación JWT
                 .anyRequest().authenticated()
             )

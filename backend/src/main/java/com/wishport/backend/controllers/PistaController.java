@@ -34,36 +34,11 @@ public class PistaController {
      * 
      * Proceso:
      * 1. Busca todas las pistas en la base de datos
-     * 2. Corrige automáticamente las URLs de imágenes si están incorrectas
-     * 3. Retorna la lista completa de pistas con URLs corregidas
+     * 2. Retorna la lista completa de pistas
      */
     @GetMapping
     public ResponseEntity<List<Pista>> getAllPistas() {
         List<Pista> pistas = pistaRepository.findAll();
-        
-        // Corregir URLs de imágenes automáticamente
-        for (Pista pista : pistas) {
-            String deporte = pista.getDeporte();
-            String urlCorrecta = null;
-            
-            if (deporte != null) {
-                if (deporte.equalsIgnoreCase("Pádel")) {
-                    urlCorrecta = "/images/padel.png";
-                } else if (deporte.equalsIgnoreCase("Fútbol 7") || 
-                           deporte.equalsIgnoreCase("Fútbol 11") || 
-                           deporte.equalsIgnoreCase("Futsal")) {
-                    urlCorrecta = "/images/futsal.png";
-                } else if (deporte.equalsIgnoreCase("Baloncesto")) {
-                    urlCorrecta = "/images/basket.png";
-                }
-            }
-            
-            // Si la URL es incorrecta, actualizarla en memoria (no en BD)
-            if (urlCorrecta != null && !urlCorrecta.equals(pista.getFotoUrl())) {
-                pista.setFotoUrl(urlCorrecta);
-            }
-        }
-        
         return ResponseEntity.ok(pistas);
     }
 

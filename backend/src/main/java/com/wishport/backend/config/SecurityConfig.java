@@ -1,6 +1,8 @@
 package com.wishport.backend.config;
 
 import com.wishport.backend.security.JwtAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,8 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity // Activa la seguridad web de Spring
 public class SecurityConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     /**
      * Filtro personalizado para validar tokens JWT
@@ -51,6 +55,8 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        logger.info("Configurando SecurityFilterChain");
+        
         http
             // Desactiva CSRF (Cross-Site Request Forgery)
             // No es necesario para APIs REST que usan JWT para autenticación
@@ -77,11 +83,28 @@ public class SecurityConfig {
                 // Todos los demás endpoints requieren autenticación JWT (cualquier usuario autenticado)
                 .anyRequest().authenticated()
             )
+            // Agregar un handler para ver qué petición se está procesando
+            .exceptionHandling(ex -> ex
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    logger.error("ACCESO DENEGADO - Método: {}, URI: {}", request.getMethod(), request.getRequestURI());
+                    logger.error("Error: {}", accessDeniedException.getMessage());
+                    response.setStatus(403);
+                    response.getWriter().write("Acceso denegado: " + accessDeniedException.getMessage());
+                })
+                .authenticationEntryPoint((request, response, authException) -> {
+                    logger.error("NO AUTENTICADO - Método: {}, URI: {}", request.getMethod(), request.getRequestURI());
+                    logger.error("Error: {}", authException.getMessage());
+                    response.setStatus(401);
+                    response.getWriter().write("No autenticado: " + authException.getMessage());
+                })
+            )
             
             // Añade el filtro JWT antes del filtro de autenticación por defecto
             // Esto permite que el filtro JWT valide el token antes de intentar autenticar
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+        logger.info("SecurityFilterChain configurado exitosamente");
+        
         // Construye y retorna la cadena de filtros de seguridad
         return http.build();
     }

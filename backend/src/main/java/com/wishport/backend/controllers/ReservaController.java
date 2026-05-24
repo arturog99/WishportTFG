@@ -7,10 +7,15 @@ import com.wishport.backend.repositories.PistaRepository;
 import com.wishport.backend.repositories.ReservaRepository;
 import com.wishport.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,6 +29,10 @@ import java.util.UUID;
 @RequestMapping("/api/reservas")
 @CrossOrigin(origins = "*")
 public class ReservaController {
+
+    private static final ZoneId ZONA_HORARIA_VALIDACION = ZoneId.of("Europe/Madrid");
+    private static final int MARGEN_ENTRADA_MINUTOS = 15;
+    private static final int MARGEN_SALIDA_MINUTOS = 10;
 
     /**
      * Repositorio de reservas para acceder a la base de datos
@@ -214,10 +223,18 @@ public class ReservaController {
         if (nuevoEstado == null || nuevoEstado.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Estado requerido");
         }
+        nuevoEstado = nuevoEstado.trim().toUpperCase();
 
         // Validar que el estado sea válido
         if (!nuevoEstado.equals("ACTIVA") && !nuevoEstado.equals("CONFIRMADA") && !nuevoEstado.equals("CANCELADA")) {
             return ResponseEntity.badRequest().body("Estado inválido. Valores válidos: ACTIVA, CONFIRMADA, CANCELADA");
+        }
+
+        if (nuevoEstado.equals("CONFIRMADA")) {
+            ResponseEntity<?> validacion = validarConfirmacionReserva(reserva);
+            if (validacion != null) {
+                return validacion;
+            }
         }
 
         // Actualizar el estado de la reserva
@@ -227,5 +244,48 @@ public class ReservaController {
         Reserva reservaActualizada = reservaRepository.save(reserva);
 
         return ResponseEntity.ok(reservaActualizada);
+    }
+
+    private ResponseEntity<?> validarConfirmacionReserva(Reserva reserva) {
+        if ("CANCELADA".equals(reserva.getEstadoReserva())) {
+            return ResponseEntity.badRequest().body("La reserva está cancelada");
+        }
+
+        if ("CONFIRMADA".equals(reserva.getEstadoReserva())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("La reserva ya está confirmada");
+        }
+
+        if (reserva.getFecha() == null || reserva.getHoraInicio() == null || reserva.getHoraFin() == null) {
+            return ResponseEntity.badRequest().body("La reserva no tiene fecha u horario válido");
+        }
+
+        LocalTime horaInicio;
+        LocalTime horaFin;
+        try {
+            horaInicio = LocalTime.parse(reserva.getHoraInicio());
+            horaFin = LocalTime.parse(reserva.getHoraFin());
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body("Horario de reserva inválido");
+        }
+
+        LocalDateTime ahora = LocalDateTime.now(ZONA_HORARIA_VALIDACION);
+        LocalDate fechaReserva = reserva.getFecha().toLocalDate();
+
+        if (!fechaReserva.equals(ahora.toLocalDate())) {
+            return ResponseEntity.badRequest().body("La reserva no corresponde al día actual");
+        }
+
+        LocalDateTime inicioPermitido = LocalDateTime.of(fechaReserva, horaInicio).minusMinutes(MARGEN_ENTRADA_MINUTOS);
+        LocalDateTime finPermitido = LocalDateTime.of(fechaReserva, horaFin).plusMinutes(MARGEN_SALIDA_MINUTOS);
+
+        if (ahora.isBefore(inicioPermitido)) {
+            return ResponseEntity.badRequest().body("La reserva aún no está dentro del horario permitido");
+        }
+
+        if (ahora.isAfter(finPermitido)) {
+            return ResponseEntity.badRequest().body("La reserva está fuera del horario permitido");
+        }
+
+        return null;
     }
 }

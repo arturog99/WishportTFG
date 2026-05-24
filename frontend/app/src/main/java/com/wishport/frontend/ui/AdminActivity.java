@@ -388,8 +388,16 @@ public class AdminActivity extends AppCompatActivity {
                     cargarReservasDelDia();
                 } else {
                     // La petición no fue exitosa
-                    String mensaje = response.code() == 403
-                            ? "❌ QR válido, pero no tienes permiso para confirmar"
+                    String detalle = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            detalle = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        detalle = "";
+                    }
+                    String mensaje = !detalle.isEmpty()
+                            ? "❌ " + detalle
                             : "❌ QR válido, pero no se confirmó la reserva (" + response.code() + ")";
                     Toast.makeText(AdminActivity.this, mensaje, Toast.LENGTH_LONG).show();
                 }

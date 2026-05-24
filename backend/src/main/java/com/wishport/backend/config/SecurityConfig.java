@@ -73,7 +73,7 @@ public class SecurityConfig {
             // Configura las reglas de autorización
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos (no requieren token JWT)
-                .requestMatchers("/api/usuarios/register", "/api/usuarios/login", "/images/**").permitAll()
+                .requestMatchers("/api/usuarios/register", "/api/usuarios/login", "/images/**", "/").permitAll()
                 // GET para obtener todas las reservas requiere rol ADMIN
                 .requestMatchers(HttpMethod.GET, "/api/reservas").hasRole("ADMIN")
                 // PUT para actualizar estado de reserva requiere rol ADMIN

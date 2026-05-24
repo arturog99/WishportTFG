@@ -74,12 +74,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos (no requieren token JWT)
                 .requestMatchers("/api/usuarios/register", "/api/usuarios/login", "/images/**", "/").permitAll()
-                // GET para obtener todas las reservas requiere rol ADMIN
-                .requestMatchers(HttpMethod.GET, "/api/reservas").hasRole("ADMIN")
-                // PUT para actualizar estado de reserva requiere rol ADMIN
-                .requestMatchers("/api/reservas/*/estado").hasRole("ADMIN")
+                // PUT para actualizar estado de reserva requiere rol ADMIN (más específico primero)
+                .requestMatchers(HttpMethod.PUT, "/api/reservas/*/estado").hasRole("ADMIN")
                 // POST para crear admin requiere rol ADMIN
                 .requestMatchers("/api/usuarios/admin").hasRole("ADMIN")
+                // GET para obtener todas las reservas requiere rol ADMIN
+                .requestMatchers(HttpMethod.GET, "/api/reservas").hasRole("ADMIN")
                 // Todos los demás endpoints requieren autenticación JWT (cualquier usuario autenticado)
                 .anyRequest().authenticated()
             )

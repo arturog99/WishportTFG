@@ -8,8 +8,6 @@ import com.wishport.backend.repositories.ReservaRepository;
 import com.wishport.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -26,8 +24,6 @@ import java.util.UUID;
 @RequestMapping("/api/reservas")
 @CrossOrigin(origins = "*")
 public class ReservaController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ReservaController.class);
 
     /**
      * Repositorio de reservas para acceder a la base de datos
@@ -120,36 +116,25 @@ public class ReservaController {
      */
     @PostMapping
     public ResponseEntity<?> createReserva(@RequestBody Reserva reserva) {
-        logger.info("=== CREAR RESERVA ===");
-        logger.info("Fecha: {}", reserva.getFecha());
-        logger.info("Hora inicio: {}", reserva.getHoraInicio());
-        logger.info("Hora fin: {}", reserva.getHoraFin());
-        logger.info("ID usuario recibido: {}", reserva.getIdUsuario() != null ? reserva.getIdUsuario().getIdUsuario() : null);
-        logger.info("ID pista recibido: {}", reserva.getIdPista() != null ? reserva.getIdPista().getIdPista() : null);
-
         // Verificar que el usuario existe
         if (reserva.getIdUsuario() == null || reserva.getIdUsuario().getIdUsuario() == null) {
-            logger.warn("Error creando reserva: ID de usuario requerido");
             return ResponseEntity.badRequest().body("ID de usuario requerido");
         }
 
         Usuario usuario = usuarioRepository.findById(reserva.getIdUsuario().getIdUsuario())
                 .orElse(null);
         if (usuario == null) {
-            logger.warn("Error creando reserva: Usuario no encontrado con ID {}", reserva.getIdUsuario().getIdUsuario());
             return ResponseEntity.badRequest().body("Usuario no encontrado");
         }
 
         // Verificar que la pista existe
         if (reserva.getIdPista() == null || reserva.getIdPista().getIdPista() == null) {
-            logger.warn("Error creando reserva: ID de pista requerido");
             return ResponseEntity.badRequest().body("ID de pista requerido");
         }
 
         Pista pista = pistaRepository.findById(reserva.getIdPista().getIdPista())
                 .orElse(null);
         if (pista == null) {
-            logger.warn("Error creando reserva: Pista no encontrada con ID {}", reserva.getIdPista().getIdPista());
             return ResponseEntity.badRequest().body("Pista no encontrada");
         }
 
@@ -168,7 +153,6 @@ public class ReservaController {
 
         // Guardar la reserva en la base de datos
         Reserva reservaGuardada = reservaRepository.save(reserva);
-        logger.info("Reserva creada correctamente con ID {}", reservaGuardada.getIdReserva());
 
         return ResponseEntity.ok(reservaGuardada);
     }

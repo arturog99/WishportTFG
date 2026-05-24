@@ -4,6 +4,7 @@ import com.wishport.backend.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -67,11 +68,11 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos (no requieren token JWT)
                 .requestMatchers("/api/usuarios/register", "/api/usuarios/login", "/images/**").permitAll()
-                // Endpoint para obtener todas las reservas requiere rol ADMIN
-                .requestMatchers("/api/reservas").hasRole("ADMIN")
-                // Endpoint para actualizar estado de reserva requiere rol ADMIN
+                // GET para obtener todas las reservas requiere rol ADMIN
+                .requestMatchers(HttpMethod.GET, "/api/reservas").hasRole("ADMIN")
+                // PUT para actualizar estado de reserva requiere rol ADMIN
                 .requestMatchers("/api/reservas/*/estado").hasRole("ADMIN")
-                // Endpoint para crear admin requiere rol ADMIN
+                // POST para crear admin requiere rol ADMIN
                 .requestMatchers("/api/usuarios/admin").hasRole("ADMIN")
                 // Todos los demás endpoints requieren autenticación JWT (cualquier usuario autenticado)
                 .anyRequest().authenticated()

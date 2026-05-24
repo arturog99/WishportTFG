@@ -349,9 +349,6 @@ public class AdminActivity extends AppCompatActivity {
         // Mostrar el resultado de la validación
         if (reservaValida != null) {
             // Código QR válido: acceso concedido
-            String nombre = reservaValida.getIdUsuario() != null ? reservaValida.getIdUsuario().getNombre() : "Usuario";
-            Toast.makeText(this, "✅ ACCESO CONCEDIDO: " + nombre, Toast.LENGTH_LONG).show();
-            
             // Marcar la reserva como confirmada en el backend
             marcarReservaComoConfirmada(reservaValida);
         } else {
@@ -367,6 +364,7 @@ public class AdminActivity extends AppCompatActivity {
      */
     private void marcarReservaComoConfirmada(Reserva reserva) {
         String token = tokenManager.getToken();
+        String nombre = reserva.getIdUsuario() != null ? reserva.getIdUsuario().getNombre() : "Usuario";
         
         // Crear el body con el nuevo estado
         Map<String, String> body = new HashMap<>();
@@ -385,12 +383,15 @@ public class AdminActivity extends AppCompatActivity {
                 // Verificar que la petición fue exitosa
                 if (response.isSuccessful() && response.body() != null) {
                     // Reserva actualizada exitosamente
-                    Toast.makeText(AdminActivity.this, "✅ Reserva confirmada", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivity.this, "✅ ACCESO CONCEDIDO: " + nombre, Toast.LENGTH_LONG).show();
                     // Recargar las reservas para actualizar la UI
                     cargarReservasDelDia();
                 } else {
                     // La petición no fue exitosa
-                    Toast.makeText(AdminActivity.this, "❌ Error al confirmar reserva", Toast.LENGTH_SHORT).show();
+                    String mensaje = response.code() == 403
+                            ? "❌ QR válido, pero no tienes permiso para confirmar"
+                            : "❌ QR válido, pero no se confirmó la reserva (" + response.code() + ")";
+                    Toast.makeText(AdminActivity.this, mensaje, Toast.LENGTH_LONG).show();
                 }
             }
 

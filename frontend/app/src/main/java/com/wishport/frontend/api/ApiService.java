@@ -12,6 +12,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -137,4 +138,16 @@ public interface ApiService {
      */
     @DELETE("reservas/{id}")
     Call<Void> cancelarReserva(@Path("id") Integer id);
+
+    /**
+     * Actualiza el estado de una reserva
+     * Endpoint: PUT /api/reservas/{id}/estado
+     * Requiere autenticación y rol ADMIN
+     * 
+     * @param id ID de la reserva a actualizar
+     * @param estado Nuevo estado de la reserva (ej: "CONFIRMADA", "CANCELADA")
+     * @return Call que retorna la reserva actualizada
+     */
+    @PUT("reservas/{id}/estado")
+    Call<Reserva> actualizarEstadoReserva(@Path("id") Integer id, @Body Map<String, String> estado);
 }

@@ -52,7 +52,10 @@ public class Reserva {
 
     /**
      * Estado de la reserva (por defecto ACTIVA)
-     * Puede ser "ACTIVA" o "CANCELADA"
+     * Puede ser "ACTIVA", "CONFIRMADA" o "CANCELADA"
+     * - ACTIVA: Reserva creada pero no confirmada
+     * - CONFIRMADA: QR escaneado, acceso concedido
+     * - CANCELADA: Reserva cancelada por el usuario
      */
     @Column(name = "estado_reserva")
     private String estadoReserva = "ACTIVA";

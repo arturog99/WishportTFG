@@ -6,12 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * Filtro de autenticación JWT
@@ -75,17 +77,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // 5. Extraer los datos del usuario del token JWT
-        // Extraemos el email y el ID del usuario para la autenticación
+        // Extraemos el email, el ID del usuario y el rol para la autenticación
         String email = jwtUtil.extractEmail(token);
         Integer idUsuario = jwtUtil.extractIdUsuario(token);
+        String rol = jwtUtil.extractRol(token);
 
         // 6. Crear objeto de autenticación de Spring Security
         // UsernamePasswordAuthenticationToken representa un usuario autenticado
         // El primer parámetro es el principal (ID del usuario)
         // El segundo parámetro son las credenciales (null porque ya validamos el token)
-        // El tercer parámetro son los roles/autoridades (null por simplicidad)
+        // El tercer parámetro son los roles/autoridades (incluimos el rol del usuario)
         UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(idUsuario, null, null);
+                new UsernamePasswordAuthenticationToken(
+                    idUsuario, 
+                    null, 
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rol))
+                );
         
         // 7. Establecer detalles de la autenticación (dirección IP, sesión, etc.)
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

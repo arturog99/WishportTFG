@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -30,7 +31,9 @@ import com.wishport.frontend.models.Usuario;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -243,11 +246,14 @@ public class AdminActivity extends AppCompatActivity {
      * Si ya tiene el permiso, abre el escáner de QR directamente
      */
     private void solicitarPermisoCamara() {
+        Log.d("AdminActivity", "solicitarPermisoCamara llamado");
         // Verificar si ya se tiene el permiso de cámara
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("AdminActivity", "Permiso de cámara no concedido, solicitando...");
             // Solicitar el permiso al usuario
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
         } else {
+            Log.d("AdminActivity", "Permiso de cámara ya concedido, abriendo escáner");
             // Ya se tiene el permiso: abrir el escáner
             abrirEscanner();
         }
@@ -258,31 +264,15 @@ public class AdminActivity extends AppCompatActivity {
      * Configura el escáner para solo leer códigos QR
      */
     private void abrirEscanner() {
+        Log.d("AdminActivity", "abrirEscanner llamado");
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setPrompt("Enfoca el código QR del usuario");
         integrator.setBeepEnabled(true);
         integrator.setOrientationLocked(true);
         integrator.setBarcodeImageEnabled(false);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        Log.d("AdminActivity", "Iniciando escaneo QR con ZXing");
         integrator.initiateScan();
-    }
-
-    /**
-     * Maneja la respuesta del usuario a la solicitud de permisos
-     * Si se concede el permiso de cámara, abre el escáner
-     * 
-     * @param requestCode Código de solicitud
-     * @param permissions Permisos solicitados
-     * @param grantResults Resultados de la solicitud
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        
-        // Verificar si se concedió el permiso de cámara
-        if (requestCode == CAMERA_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            abrirEscanner();
-        }
     }
 
     /**
@@ -296,19 +286,52 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("AdminActivity", "onActivityResult llamado, requestCode: " + requestCode + ", resultCode: " + resultCode);
         
         // Parsear el resultado del escaneo
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        Log.d("AdminActivity", "IntentResult parseado: " + (result != null ? "no null" : "null"));
+        if (result != null) {
+            Log.d("AdminActivity", "Contenido del QR: " + result.getContents());
+        }
         
         // Si se escaneó un código QR, validarlo
         if (result != null && result.getContents() != null) {
+            Log.d("AdminActivity", "QR escaneado, validando...");
             validarCodigoEscaneado(result.getContents());
+        } else {
+            Log.d("AdminActivity", "No se escaneó ningún QR o result es null");
         }
     }
 
     /**
+     * Maneja la respuesta del usuario a la solicitud de permisos
+     * Si se concede el permiso de cámara, abre el escáner
+     * 
+     * @param requestCode Código de solicitud
+     * @param permissions Permisos solicitados
+     * @param grantResults Resultados de la solicitud
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("AdminActivity", "onRequestPermissionsResult llamado, requestCode: " + requestCode);
+        
+        // Verificar si se concedió el permiso de cámara
+        if (requestCode == CAMERA_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d("AdminActivity", "Permiso de cámara concedido, abriendo escáner");
+            abrirEscanner();
+        } else {
+            Log.d("AdminActivity", "Permiso de cámara denegado");
+            Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /**
      * Valida si el código QR escaneado corresponde a una reserva del día
      * Busca el código en las reservas del día y muestra el resultado
+     * Si es válido, marca la reserva como confirmada en el backend
      * 
      * @param qrLeido Código QR escaneado por el usuario
      */
@@ -328,10 +351,58 @@ public class AdminActivity extends AppCompatActivity {
             // Código QR válido: acceso concedido
             String nombre = reservaValida.getIdUsuario() != null ? reservaValida.getIdUsuario().getNombre() : "Usuario";
             Toast.makeText(this, "✅ ACCESO CONCEDIDO: " + nombre, Toast.LENGTH_LONG).show();
+            
+            // Marcar la reserva como confirmada en el backend
+            marcarReservaComoConfirmada(reservaValida);
         } else {
             // Código QR inválido o de otro día: acceso denegado
             Toast.makeText(this, "❌ ACCESO DENEGADO: QR inválido o de otro día", Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     * Marca una reserva como confirmada en el backend
+     * 
+     * @param reserva Reserva a marcar como confirmada
+     */
+    private void marcarReservaComoConfirmada(Reserva reserva) {
+        String token = tokenManager.getToken();
+        
+        // Crear el body con el nuevo estado
+        Map<String, String> body = new HashMap<>();
+        body.put("estado", "CONFIRMADA");
+        
+        // Mostrar el ProgressBar
+        progressBar.setVisibility(View.VISIBLE);
+        
+        // Realizar petición asíncrona al backend para actualizar el estado
+        RetrofitClient.getApiService(token).actualizarEstadoReserva(reserva.getIdReserva(), body).enqueue(new Callback<Reserva>() {
+            @Override
+            public void onResponse(Call<Reserva> call, Response<Reserva> response) {
+                // Ocultar el ProgressBar
+                progressBar.setVisibility(View.GONE);
+                
+                // Verificar que la petición fue exitosa
+                if (response.isSuccessful() && response.body() != null) {
+                    // Reserva actualizada exitosamente
+                    Toast.makeText(AdminActivity.this, "✅ Reserva confirmada", Toast.LENGTH_SHORT).show();
+                    // Recargar las reservas para actualizar la UI
+                    cargarReservasDelDia();
+                } else {
+                    // La petición no fue exitosa
+                    Toast.makeText(AdminActivity.this, "❌ Error al confirmar reserva", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Reserva> call, Throwable t) {
+                // Ocultar el ProgressBar
+                progressBar.setVisibility(View.GONE);
+                
+                // Mostrar error de conexión al usuario
+                Toast.makeText(AdminActivity.this, "❌ Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**

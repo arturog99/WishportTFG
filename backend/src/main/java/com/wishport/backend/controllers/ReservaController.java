@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -180,5 +181,51 @@ public class ReservaController {
         // Eliminar la reserva de la base de datos
         reservaRepository.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Endpoint para actualizar el estado de una reserva
+     * PUT /api/reservas/{id}/estado
+     * Requiere token JWT y rol ADMIN
+     * Se usa cuando el admin escanea el QR para confirmar el acceso
+     * 
+     * @param id ID de la reserva a actualizar
+     * @param body Map con el nuevo estado (ej: {"estado": "CONFIRMADA"})
+     * @return ResponseEntity con la reserva actualizada o error si no existe
+     * 
+     * Proceso:
+     * 1. Verifica que la reserva existe
+     * 2. Extrae el nuevo estado del body
+     * 3. Valida que el estado sea válido (ACTIVA, CONFIRMADA, CANCELADA)
+     * 4. Actualiza el estado de la reserva
+     * 5. Guarda los cambios en la base de datos
+     * 6. Retorna la reserva actualizada
+     */
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<?> actualizarEstadoReserva(@PathVariable Integer id, @RequestBody Map<String, String> body) {
+        // Verificar que la reserva existe
+        Reserva reserva = reservaRepository.findById(id).orElse(null);
+        if (reserva == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Extraer el nuevo estado del body
+        String nuevoEstado = body.get("estado");
+        if (nuevoEstado == null || nuevoEstado.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Estado requerido");
+        }
+
+        // Validar que el estado sea válido
+        if (!nuevoEstado.equals("ACTIVA") && !nuevoEstado.equals("CONFIRMADA") && !nuevoEstado.equals("CANCELADA")) {
+            return ResponseEntity.badRequest().body("Estado inválido. Valores válidos: ACTIVA, CONFIRMADA, CANCELADA");
+        }
+
+        // Actualizar el estado de la reserva
+        reserva.setEstadoReserva(nuevoEstado);
+
+        // Guardar los cambios en la base de datos
+        Reserva reservaActualizada = reservaRepository.save(reserva);
+
+        return ResponseEntity.ok(reservaActualizada);
     }
 }

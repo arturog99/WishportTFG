@@ -7,10 +7,13 @@ import com.wishport.backend.repositories.PistaRepository;
 import com.wishport.backend.repositories.ReservaRepository;
 import com.wishport.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -136,6 +139,36 @@ public class ReservaController {
                 .orElse(null);
         if (pista == null) {
             return ResponseEntity.badRequest().body("Pista no encontrada");
+        }
+
+        // Validar horario presente y formato correcto
+        if (reserva.getHoraInicio() == null || reserva.getHoraFin() == null
+                || reserva.getHoraInicio().isEmpty() || reserva.getHoraFin().isEmpty()) {
+            return ResponseEntity.badRequest().body("Hora de inicio y fin requeridas");
+        }
+        try {
+            LocalTime hi = LocalTime.parse(reserva.getHoraInicio());
+            LocalTime hf = LocalTime.parse(reserva.getHoraFin());
+            if (!hi.isBefore(hf)) {
+                return ResponseEntity.badRequest().body("La hora de inicio debe ser anterior a la hora de fin");
+            }
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body("Formato de horario inválido (HH:mm)");
+        }
+
+        // Determinar fecha que se usará para la búsqueda de solapamientos
+        LocalDateTime fechaReserva = reserva.getFecha() != null ? reserva.getFecha() : LocalDateTime.now();
+
+        // Validar que no exista otra reserva activa/confirmada que se solape en la misma pista y día
+        List<Reserva> solapadas = reservaRepository.findSolapadas(
+                pista.getIdPista(),
+                fechaReserva,
+                reserva.getHoraInicio(),
+                reserva.getHoraFin()
+        );
+        if (!solapadas.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Ya existe una reserva en esa pista y franja horaria");
         }
 
         // Generar código QR único para la reserva

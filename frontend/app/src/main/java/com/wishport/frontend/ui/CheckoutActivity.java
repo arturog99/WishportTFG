@@ -353,9 +353,20 @@ public class CheckoutActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    // La petición no fue exitosa
+                    // La petición no fue exitosa: mostrar mensaje del backend si existe
                     btnPagar.setEnabled(true);
-                    Toast.makeText(CheckoutActivity.this, "Error al reservar (" + response.code() + ")", Toast.LENGTH_LONG).show();
+                    String detalle = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            detalle = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        detalle = "";
+                    }
+                    String mensaje = !detalle.isEmpty()
+                            ? detalle
+                            : "Error al reservar (" + response.code() + ")";
+                    Toast.makeText(CheckoutActivity.this, mensaje, Toast.LENGTH_LONG).show();
                 }
             }
 

@@ -22,3 +22,8 @@ frontend/*.iml
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Material personal de la defensa (no se sube al repo)
+GUION_EXPOSICION.md
+GUION_EXPOSICION.pdf
+generar_pdf.py
